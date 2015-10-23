@@ -6,28 +6,28 @@ output:
     number_sections: yes
 ---
 
-## Assignment for Getting & Cleaning Data
+#### Assignment for Getting & Cleaning Data
 Notes regarding run_analysis.R -- coded by h-rm_tan 22-23Oct2015
 
-### REFs:
+#### REFs:
 http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones
 https://www.youtube.com/watch?v=XOEN9W05_4A
 
-#### The code should work if you have run_analysis.R and the unzipped "UCI HAR Dataset" data folder present in the working directory of R/Rstudio. Otherwise, paths need to be set, e.g.:
+(i) The code should work if you have run_analysis.R and the unzipped "UCI HAR Dataset" data folder present in the working directory of R/Rstudio. Otherwise, paths need to be set, e.g.:
 
 ```{r}
 ## --- SET PATHS --------------------------------------------------------------
-datapath <- "~/Documents/OwnCloud/Coursera_DataScienceTrack_JH/03_Getting&CleaningData/Assignment/UCI HAR Dataset/"
-setwd(datapath)
+# datapath <- "~/Documents/OwnCloud/Coursera_DataScienceTrack_JH/03_Getting&CleaningData/Assignment/UCI HAR Dataset/"
+# setwd(datapath)
 ```
 
-Load the required dplr package.
+(ii) Load the required dplr package.
 ```{r}
 ## --- LIBRARIES --------------------------------------------------------------
 library(dplyr)
 ```
 
---- || --------------------------------------------------------------
+#### --- || --------------------------------------------------------------
 1. All the relevant files are being read in 1st by the code as follows:
 ```{r}
 ## --- READ FILES & ADD VARIABLE NAMES --------------------------------------------------------------
