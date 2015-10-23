@@ -3,7 +3,6 @@ title: "README for run_analysis.R -- describing how the script works."
 output:
   html_document:
     keep_md: yes
-    number_sections: yes
 ---
 
 #### Assignment for Getting & Cleaning Data
@@ -27,7 +26,7 @@ https://www.youtube.com/watch?v=XOEN9W05_4A
 library(dplyr)
 ```
 
-##### --- 1 --------------------------------------------------------------
+##### --- 1 READ FILES & ADD VARIABLE NAMES --------------------------------------------------------------
 1. All the relevant files are being read in 1st by the code as follows:
 ```{r}
 ## --- READ FILES & ADD VARIABLE NAMES --------------------------------------------------------------
@@ -84,7 +83,7 @@ names(testSubj) <- "subjID"
 testSubj <- testSubj %>% mutate(datatype = "test")
 ```
 
-##### --- 2 --------------------------------------------------------------
+##### --- 2 COMBINE & MERGE DATA --------------------------------------------------------------
 2. Now the corresponding parts of training and test datasets can be combined in 2 steps.
 
 2.1 First -- the script combines the feature measurements for corresponding activity performed by each participant belonging to either the training or test group. This is achieved using cbind() to combine the column-variables.
@@ -113,7 +112,7 @@ Now that both datasets are merged, we could free up some working memory by clear
 # rm(list = c( ls(pattern = "^test"), ls(pattern = "^train") ) )
 ```
 
-##### --- 3 --------------------------------------------------------------
+##### --- 3 EXTRACT Mean & Std Measures --------------------------------------------------------------
 3. Next the script selects only measured mean and standard deviation from the activity features variables. 
 The subjID, datatype and activity information is kept while selecting only variable names that contain either "mean" or "std" using a chained process of select(). The output is assigned as "D1".
 
@@ -122,7 +121,7 @@ The subjID, datatype and activity information is kept while selecting only varia
 D1 <- D %>% select(subjID, datatype, activity, contains("mean"), contains("std") ) # dim: [10,299 x 86 +3]
 ```
 
-##### --- 4 --------------------------------------------------------------
+##### --- 4 USE Descriptive Activity Names --------------------------------------------------------------
 4. Subsequently, the exisiting activity codes [1:6] are replaced with their corresponding activity descriptions: "LAYING" ; "SITTING" ; "STANDING"; "WALKING"; "WALKING_DOWNSTAIRS" ; "WALKING_UPSTAIRS". This is achieved by indexing the activity variable, which ranges from 1 to 6, into the activity label vector "activityL" and substituting this as the activity variable in D1 in a single step.
 
 ```{r}
@@ -169,7 +168,7 @@ D1$activity <- activityL[D1$activity,2] #%>% print
 ```
 
 
-##### --- 5 --------------------------------------------------------------
+##### --- 5 DERIVE Variable Means GROUPED by SubjID & Activity --------------------------------------------------------------
 5. Next the script creates a 2nd independent tidy data set from D1. 
 The new tiday data D2_tidymeans comprises gives information on the average of each of the feature variable for each variable and each subject.
 
@@ -178,7 +177,7 @@ The new tiday data D2_tidymeans comprises gives information on the average of ea
 D2_tidymeans <- D1 %>% group_by(subjID, datatype, activity) %>% summarise_each(funs(mean), -subjID:-activity )
 ```
 
-##### --- 6 --------------------------------------------------------------
+##### --- 6 WRITE out tidymeans data --------------------------------------------------------------
 6. Finally the output D2_tidymeans is written out as a comma-separated text file "outputD2_tidymeans.txt", which could be read with read.csv() and viewed.
 
 ```{r}
