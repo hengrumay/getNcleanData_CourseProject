@@ -7,22 +7,22 @@ output:
 ---
 
 ## Assignment for Getting & Cleaning Data
-### Notes regarding run_analysis.R -- coded by h-rm_tan 22-23Oct2015
+Notes regarding run_analysis.R -- coded by h-rm_tan 22-23Oct2015
 
-## NOTES:
-### http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones
-### https://www.youtube.com/watch?v=XOEN9W05_4A
+### REFs:
+http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones
+https://www.youtube.com/watch?v=XOEN9W05_4A
 
-The code should work if you have run_analysis.R and the unzipped "UCI HAR Dataset" data folder present in the working directory of R/Rstudio. Otherwise, paths need to be set, e.g.:
+###The code should work if you have run_analysis.R and the unzipped "UCI HAR Dataset" data folder present in the working directory of R/Rstudio. Otherwise, paths need to be set, e.g.:
 
-## --- SET PATHS --------------------------------------------------------------
+### --- SET PATHS --------------------------------------------------------------
 ```{r}
 datapath <- "~/Documents/OwnCloud/Coursera_DataScienceTrack_JH/03_Getting&CleaningData/Assignment/UCI HAR Dataset/"
 setwd(datapath)
 ```
 
 Load the required dplr package.
-## --- LIBRARIES --------------------------------------------------------------
+### --- LIBRARIES --------------------------------------------------------------
 ```{r}
 library(dplyr)
 ```
