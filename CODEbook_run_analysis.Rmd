@@ -23,7 +23,7 @@ Acquired Signas: Sensor signals (accelerometer and gyroscope) were pre-processed
 
 - 'test/X_test.txt': Test set.
 - 'test/y_test.txt': Test labels.
--
+
 
 ======================================
 ##### Variables' Descriptions : the variables that run_analysis.R spews out at each stage are as follows :
