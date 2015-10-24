@@ -1,7 +1,7 @@
 
 ##### Assignment for Getting & Cleaning Data : CODEbook_run_analysis.Rmd
-CODEbook for run_analysis.R -- describing the variables -- coded by h-rm_tan 22-24_Oct2015
-Refer to README_run_analysis.Rmd for details on what the script does.
+<p>CODEbook for run_analysis.R -- describing the variables -- coded by h-rm_tan 22-24_Oct2015</p>
+<p>Refer to README_run_analysis.Rmd for details on what the script does.</p>
 
 ##### Variables' Descriptions : the variables that run_analysis.R spews out at each stage are as follows :
 
@@ -274,7 +274,7 @@ levels(D1$activity)
 # [5] "WALKING_DOWNSTAIRS" "WALKING_UPSTAIRS"
 ```
 
-###### --- (5) DERIVE Variable Means GROUPED by Subj & Activity --------------------------------------------------------------
+###### --- (5) DERIVE Variable Means GROUP by Subj & Activity --------------------------------------------------------------
 
 <b>D2_tidymeans</b> is a 180 x 89 matrix summary of the means of activity feature variables in D1 which are grouped by the activity performed and by each subject (regardless of their group assignment). Each subject has 6 rows of data values; a total of 180rows.
 ```{r}
