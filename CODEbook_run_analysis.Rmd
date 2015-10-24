@@ -30,6 +30,7 @@ as provided by  http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognitio
 
 ##### Variables' Descriptions : the variables that run_analysis.R spews out at each stage are as follows :
 
+======================================
 ###### --- (1) READ FILES & ADD VARIABLE NAMES --------------------------------------------------------------
 
 <b>activityL</b> is a 6 x 2 matrix describing the 6 types of activities performed by each participant.
