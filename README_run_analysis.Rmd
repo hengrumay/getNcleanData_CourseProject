@@ -1,7 +1,7 @@
 
 ##### Assignment for Getting & Cleaning Data: README_run_analysis.Rmd 
-README for run_analysis.R -- describing how the script works: coded by h-rm_tan 22-24_Oct2015
-Refer to CODEbook_run_analysis.Rmd for description of variables.
+README for run_analysis.R -- describing how the script works: coded by h-rm_tan 22-24_Oct2015.
+*Refer to CODEbook_run_analysis.Rmd for description of variables.
 
 ##### REFs:
 RAW DATA URL: http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones
@@ -21,7 +21,7 @@ Activities measured shown in video: https://www.youtube.com/watch?v=XOEN9W05_4A
 library(dplyr)
 ```
 
-##### --- (1) READ FILES & ADD VARIABLE NAMES --------------------------------------------------------------
+###### --- (1) READ FILES & ADD VARIABLE NAMES --------------------------------------------------------------
 (1) All the relevant files are being read in 1st by the code as follows:
 
 1.1 First the activity variable description files are being read.
@@ -76,7 +76,7 @@ names(testSubj) <- "subjID"
 testSubj <- testSubj %>% mutate(datatype = "test")
 ```
 
-##### --- (2) COMBINE & MERGE DATA --------------------------------------------------------------
+###### --- (2) COMBINE & MERGE DATA --------------------------------------------------------------
 (2) Now the corresponding parts of training and test datasets can be combined in 2 steps.
 
 2.1 First -- the script combines the feature measurements for corresponding activity performed by each participant belonging to either the training or test group. This is achieved using cbind() to combine the column-variables.
@@ -105,7 +105,7 @@ Now that both datasets are merged, we could free up some working memory by clear
 # rm(list = c( ls(pattern = "^test"), ls(pattern = "^train") ) )
 ```
 
-##### --- (3) EXTRACT Mean & Std Measures --------------------------------------------------------------
+###### --- (3) EXTRACT Mean & Std Measures --------------------------------------------------------------
 (3) Next the script selects only measured mean and standard deviation from the activity features variables. 
 The subjID, datatype and activity information is kept while selecting only variable names that contain either "mean" or "std" using a chained process of select(). The output is assigned as "D1".
 
@@ -113,14 +113,14 @@ The subjID, datatype and activity information is kept while selecting only varia
 D1 <- D %>% select(subjID, datatype, activity, contains("mean"), contains("std") ) 
 ```
 
-##### --- (4) USE Descriptive Activity Names --------------------------------------------------------------
+###### --- (4) USE Descriptive Activity Names --------------------------------------------------------------
 (4) Subsequently, the exisiting activity codes [1:6] are replaced with their corresponding activity descriptions: "LAYING" ; "SITTING" ; "STANDING"; "WALKING"; "WALKING_DOWNSTAIRS" ; "WALKING_UPSTAIRS". This is achieved by indexing the activity variable, which ranges from 1 to 6, into the activity label vector "activityL" and substituting this as the activity variable in D1 in a single step.
 
 ```{r}
 D1$activity <- activityL[D1$activity,2] #%>% print
 ```
 
-##### --- (5) DERIVE Variable Means GROUPED by Subj & Activity --------------------------------------------------------------
+###### --- (5) DERIVE Variable Means GROUPED by Subj & Activity --------------------------------------------------------------
 (5) Next the script creates a 2nd independent tidy data set from D1. 
 The new data D2_tidymeans contains information on the average of each of the activity feature variable for each activity and each subject.
 
@@ -129,7 +129,7 @@ The new data D2_tidymeans contains information on the average of each of the act
 D2_tidymeans <- D1 %>% group_by(subjID, datatype, activity) %>% summarise_each(funs(mean), -subjID:-activity )
 ```
 
-##### --- (6) WRITE out tidymeans data --------------------------------------------------------------
+###### --- (6) WRITE out tidymeans data --------------------------------------------------------------
 (6) Finally the output D2_tidymeans is written out as a comma-separated text file "outputD2_tidymeans.txt", which could be read with read.csv() and viewed in R/Rstudio.
 
 ```{r}

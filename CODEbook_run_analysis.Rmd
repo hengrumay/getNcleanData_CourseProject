@@ -100,7 +100,7 @@ FeatureNames
 ```
 #####
 
-<b>trainX<b> contains 7352 rows of measurements of activity features from the all subjects belonging to the set of TRAINING data, with corresponding activity feature descriptions for 561-column variable names.
+<b>trainX</b> contains 7352 rows of measurements of activity features from the all subjects belonging to the set of TRAINING data, with corresponding activity feature descriptions for 561-column variable names.
 ```{r}
 trainX <- read.table("train/X_train.txt")   # dim(trainX)     # [1] 7352  561
 names(trainX) <- FeatureNames 
@@ -196,7 +196,7 @@ unique(testSubj)
 # 2213     20     test
 # 2567     24     test
 ```
-#####
+
 
 ###### --- (2) COMBINE & MERGE DATA --------------------------------------------------------------
 
@@ -205,21 +205,18 @@ unique(testSubj)
 ## --- combineTRAINdata
 trainD <- tbl_df(cbind(trainSubj,trainY,trainX))   # Source: local data frame [7,352 x 564]
 ```
-#####
 
 <b>testD</b> is a column-wise combination of testSubj, testY and testX to form a 2947 x 564 matrix
 ```{r}
 ## --- combineTRAINdata
 testD <- tbl_df(cbind(testSubj,testY,testX))   # Source: local data frame [2,947 x 564]
 ```
-#####
 
 <b>D</b> is a [10,299 x 564 matrix] result of merging trainD and testD by combining (appending) all rows from both tables.
 ```{r}
 ## MERGE train&testD
 D <- rbind(trainD,testD)   # Source: local data frame [10,299 x 564]
 ```
-#####
 
 
 ###### --- (3) EXTRACT Mean & Std Measures --------------------------------------------------------------
@@ -228,7 +225,7 @@ D <- rbind(trainD,testD)   # Source: local data frame [10,299 x 564]
 ```{r}
 D1 <- D %>% select(subjID, datatype, activity, contains("mean"), contains("std") ) # dim: [10,299 x 86 +3]
 ```
-#####
+
 
 The column variable names of D1 are as follows:
 ```{r}
@@ -264,7 +261,7 @@ names(D1)
 # [85] "fBodyGyro.std...Z"                    "fBodyAccMag.std.."                    "fBodyBodyAccJerkMag.std.."
 # [88] "fBodyBodyGyroMag.std.."               "fBodyBodyGyroJerkMag.std.."
 ```
-#####
+
 
 ###### --- (4) USE Descriptive Activity Names --------------------------------------------------------------
 
@@ -276,7 +273,6 @@ levels(D1$activity)
 # [1] "LAYING"             "SITTING"            "STANDING"           "WALKING"
 # [5] "WALKING_DOWNSTAIRS" "WALKING_UPSTAIRS"
 ```
-#####
 
 ###### --- (5) DERIVE Variable Means GROUPED by Subj & Activity --------------------------------------------------------------
 
@@ -327,10 +323,8 @@ D2_tidymeans
 # fBodyBodyAccJerkMag.std.. (dbl), fBodyBodyGyroMag.std.. (dbl), fBodyBodyGyroJerkMag.std.. (dbl)
 #
 ```
-#####
 
 ###### --- (6) WRITE out tidymeans data --------------------------------------------------------------
-
 ```{r}
 # --- WRITE output D2_tidymeans to working-directory...
 # write.table(D2_tidymeans, file = "outputD2_tidymeans.txt", row.name=FALSE, col.names = names(D2_tidymeans), sep = ",")
@@ -341,4 +335,3 @@ outputD2_tidymeans <- read.csv("outputD2_tidymeans.txt")
 View(outputD2_tidymeans)
 ```
 outputD2_tidymeans is the same as D2_tidymeans
-#####
