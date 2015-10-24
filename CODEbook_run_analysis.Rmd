@@ -1,0 +1,524 @@
+
+##### Assignment for Getting & Cleaning Data
+CODEbook for run_analysis.R -- describing the variables -- coded by h-rm_tan 22-24_Oct2015
+
+##### REFs:
+RAW DATA URL: http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones
+Activities measured shown in video: https://www.youtube.com/watch?v=XOEN9W05_4A
+
+##### The variables that run_analysis.R spews out are as follows:
+
+When relevant files are being read from the UCI HAR Dataset:
+
+##### --- 1 READ FILES & ADD VARIABLE NAMES --------------------------------------------------------------
+variables' descriptions
+
+```{r}
+activityL <- read.table("/activity_labels.txt")   # dim(activityL)  # [1] 6 2
+
+activityL
+#   V1                 V2
+# 1  1            WALKING
+# 2  2   WALKING_UPSTAIRS
+# 3  3 WALKING_DOWNSTAIRS
+# 4  4            SITTING
+# 5  5           STANDING
+# 6  6             LAYING
+```
+activityL is a 6rows by 2cols matrix describing the 6 types of activities performed by each participant.
+Column1 is numbered 1:6; column2 lists the activities ["LAYING" ; "SITTING" ; "STANDING"; "WALKING"; "WALKING_DOWNSTAIRS" ; "WALKING_UPSTAIRS"]
+
+
+```{r}
+activityF <- read.table("/features.txt")   # dim(activityF)  # [1] 561   2
+
+activityF
+#      V1                                   V2
+# 1     1                    tBodyAcc-mean()-X
+# 2     2                    tBodyAcc-mean()-Y
+# 3     3                    tBodyAcc-mean()-Z
+# 4     4                     tBodyAcc-std()-X
+# 5     5                     tBodyAcc-std()-Y
+# 6     6                     tBodyAcc-std()-Z
+# 7     7                     tBodyAcc-mad()-X
+# 8     8                     tBodyAcc-mad()-Y
+# 9     9                     tBodyAcc-mad()-Z
+# 10   10                     tBodyAcc-max()-X
+# 11   11                     tBodyAcc-max()-Y
+# 12   12                     tBodyAcc-max()-Z
+# 13   13                     tBodyAcc-min()-X
+# 14   14                     tBodyAcc-min()-Y
+# 15   15                     tBodyAcc-min()-Z
+# 16   16                       tBodyAcc-sma()
+# 17   17                  tBodyAcc-energy()-X
+# 18   18                  tBodyAcc-energy()-Y
+# 19   19                  tBodyAcc-energy()-Z
+# 20   20                     tBodyAcc-iqr()-X
+# 21   21                     tBodyAcc-iqr()-Y
+# 22   22                     tBodyAcc-iqr()-Z
+# 23   23                 tBodyAcc-entropy()-X
+# 24   24                 tBodyAcc-entropy()-Y
+# 25   25                 tBodyAcc-entropy()-Z
+# 26   26               tBodyAcc-arCoeff()-X,1
+# 27   27               tBodyAcc-arCoeff()-X,2
+# 28   28               tBodyAcc-arCoeff()-X,3
+# 29   29               tBodyAcc-arCoeff()-X,4
+# 30   30               tBodyAcc-arCoeff()-Y,1
+# 31   31               tBodyAcc-arCoeff()-Y,2
+# 32   32               tBodyAcc-arCoeff()-Y,3
+# 33   33               tBodyAcc-arCoeff()-Y,4
+# 34   34               tBodyAcc-arCoeff()-Z,1
+# 35   35               tBodyAcc-arCoeff()-Z,2
+# 36   36               tBodyAcc-arCoeff()-Z,3
+# 37   37               tBodyAcc-arCoeff()-Z,4
+# ... ...
+```
+activityF is a 561rows by 2cols matrix with column 2 listing descriptions of the activity features calculated from raw 3-axial angular acceleration and velocity measured by phone's accelerometer and gyroscope. Column1 is numbered 1:561.
+
+
+```{r}
+## --- make.names for feature variables
+FeatureNames <- make.names(activityF[,2], unique = TRUE, allow_ = TRUE)
+```
+FeatureNames is a vector containing string characters derived from the 2nd column of activityF which contain the activity feature descriptions. This vector of descriptions are forced to be a list of "unique" names.
+
+```{r}
+# FeatureNames
+#   [1] "tBodyAcc.mean...X"                    "tBodyAcc.mean...Y"                    "tBodyAcc.mean...Z"                   
+#   [4] "tBodyAcc.std...X"                     "tBodyAcc.std...Y"                     "tBodyAcc.std...Z"                    
+#   [7] "tBodyAcc.mad...X"                     "tBodyAcc.mad...Y"                     "tBodyAcc.mad...Z"                    
+#  [10] "tBodyAcc.max...X"                     "tBodyAcc.max...Y"                     "tBodyAcc.max...Z"                    
+#  [13] "tBodyAcc.min...X"                     "tBodyAcc.min...Y"                     "tBodyAcc.min...Z"                    
+#  [16] "tBodyAcc.sma.."                       "tBodyAcc.energy...X"                  "tBodyAcc.energy...Y"                 
+#  [19] "tBodyAcc.energy...Z"                  "tBodyAcc.iqr...X"                     "tBodyAcc.iqr...Y"                    
+#  [22] "tBodyAcc.iqr...Z"                     "tBodyAcc.entropy...X"                 "tBodyAcc.entropy...Y"                
+#  [25] "tBodyAcc.entropy...Z"                 "tBodyAcc.arCoeff...X.1"               "tBodyAcc.arCoeff...X.2"              
+#  [28] "tBodyAcc.arCoeff...X.3"               "tBodyAcc.arCoeff...X.4"               "tBodyAcc.arCoeff...Y.1"              
+#  [31] "tBodyAcc.arCoeff...Y.2"               "tBodyAcc.arCoeff...Y.3"               "tBodyAcc.arCoeff...Y.4"              
+#  [34] "tBodyAcc.arCoeff...Z.1"               "tBodyAcc.arCoeff...Z.2"               "tBodyAcc.arCoeff...Z.3"              
+#  [37] "tBodyAcc.arCoeff...Z.4"               "tBodyAcc.correlation...X.Y"           "tBodyAcc.correlation...X.Z"          
+#  [40] "tBodyAcc.correlation...Y.Z"           "tGravityAcc.mean...X"                 "tGravityAcc.mean...Y"                
+#  [43] "tGravityAcc.mean...Z"                 "tGravityAcc.std...X"                  "tGravityAcc.std...Y"                 
+#  [46] "tGravityAcc.std...Z"                  "tGravityAcc.mad...X"                  "tGravityAcc.mad...Y"                 
+#  [49] "tGravityAcc.mad...Z"                  "tGravityAcc.max...X"                  "tGravityAcc.max...Y"                 
+#  [52] "tGravityAcc.max...Z"                  "tGravityAcc.min...X"                  "tGravityAcc.min...Y"                 
+#  [55] "tGravityAcc.min...Z"                  "tGravityAcc.sma.."                    "tGravityAcc.energy...X"              
+#  [58] "tGravityAcc.energy...Y"               "tGravityAcc.energy...Z"               "tGravityAcc.iqr...X"                 
+#  [61] "tGravityAcc.iqr...Y"                  "tGravityAcc.iqr...Z"                  "tGravityAcc.entropy...X"             
+#  [64] "tGravityAcc.entropy...Y"              "tGravityAcc.entropy...Z"              "tGravityAcc.arCoeff...X.1"           
+#  [67] "tGravityAcc.arCoeff...X.2"            "tGravityAcc.arCoeff...X.3"            "tGravityAcc.arCoeff...X.4"           
+#  [70] "tGravityAcc.arCoeff...Y.1"            "tGravityAcc.arCoeff...Y.2"            "tGravityAcc.arCoeff...Y.3"           
+#  [73] "tGravityAcc.arCoeff...Y.4"            "tGravityAcc.arCoeff...Z.1"            "tGravityAcc.arCoeff...Z.2"           
+#  [76] "tGravityAcc.arCoeff...Z.3"            "tGravityAcc.arCoeff...Z.4"            "tGravityAcc.correlation...X.Y"       
+#  [79] "tGravityAcc.correlation...X.Z"        "tGravityAcc.correlation...Y.Z"        "tBodyAccJerk.mean...X"               
+#  [82] "tBodyAccJerk.mean...Y"                "tBodyAccJerk.mean...Z"                "tBodyAccJerk.std...X"                
+#  [85] "tBodyAccJerk.std...Y"                 "tBodyAccJerk.std...Z"                 "tBodyAccJerk.mad...X"                
+#  [88] "tBodyAccJerk.mad...Y"                 "tBodyAccJerk.mad...Z"                 "tBodyAccJerk.max...X"                
+#  [91] "tBodyAccJerk.max...Y"                 "tBodyAccJerk.max...Z"                 "tBodyAccJerk.min...X"                
+#  [94] "tBodyAccJerk.min...Y"                 "tBodyAccJerk.min...Z"                 "tBodyAccJerk.sma.."                  
+#  [97] "tBodyAccJerk.energy...X"              "tBodyAccJerk.energy...Y"              "tBodyAccJerk.energy...Z"             
+# [100] "tBodyAccJerk.iqr...X"                 "tBodyAccJerk.iqr...Y"                 "tBodyAccJerk.iqr...Z"                
+# [103] "tBodyAccJerk.entropy...X"             "tBodyAccJerk.entropy...Y"             "tBodyAccJerk.entropy...Z"            
+# [106] "tBodyAccJerk.arCoeff...X.1"           "tBodyAccJerk.arCoeff...X.2"           "tBodyAccJerk.arCoeff...X.3"          
+# [109] "tBodyAccJerk.arCoeff...X.4"           "tBodyAccJerk.arCoeff...Y.1"           "tBodyAccJerk.arCoeff...Y.2"          
+# [112] "tBodyAccJerk.arCoeff...Y.3"           "tBodyAccJerk.arCoeff...Y.4"           "tBodyAccJerk.arCoeff...Z.1"          
+# [115] "tBodyAccJerk.arCoeff...Z.2"           "tBodyAccJerk.arCoeff...Z.3"           "tBodyAccJerk.arCoeff...Z.4"          
+# [118] "tBodyAccJerk.correlation...X.Y"       "tBodyAccJerk.correlation...X.Z"       "tBodyAccJerk.correlation...Y.Z"      
+# [121] "tBodyGyro.mean...X"                   "tBodyGyro.mean...Y"                   "tBodyGyro.mean...Z"                  
+# [124] "tBodyGyro.std...X"                    "tBodyGyro.std...Y"                    "tBodyGyro.std...Z"                   
+# [127] "tBodyGyro.mad...X"                    "tBodyGyro.mad...Y"                    "tBodyGyro.mad...Z"                   
+# [130] "tBodyGyro.max...X"                    "tBodyGyro.max...Y"                    "tBodyGyro.max...Z"                   
+# [133] "tBodyGyro.min...X"                    "tBodyGyro.min...Y"                    "tBodyGyro.min...Z"                   
+# [136] "tBodyGyro.sma.."                      "tBodyGyro.energy...X"                 "tBodyGyro.energy...Y"                
+# [139] "tBodyGyro.energy...Z"                 "tBodyGyro.iqr...X"                    "tBodyGyro.iqr...Y"                   
+# [142] "tBodyGyro.iqr...Z"                    "tBodyGyro.entropy...X"                "tBodyGyro.entropy...Y"               
+# [145] "tBodyGyro.entropy...Z"                "tBodyGyro.arCoeff...X.1"              "tBodyGyro.arCoeff...X.2"             
+# [148] "tBodyGyro.arCoeff...X.3"              "tBodyGyro.arCoeff...X.4"              "tBodyGyro.arCoeff...Y.1"             
+# [151] "tBodyGyro.arCoeff...Y.2"              "tBodyGyro.arCoeff...Y.3"              "tBodyGyro.arCoeff...Y.4"             
+# [154] "tBodyGyro.arCoeff...Z.1"              "tBodyGyro.arCoeff...Z.2"              "tBodyGyro.arCoeff...Z.3"             
+# [157] "tBodyGyro.arCoeff...Z.4"              "tBodyGyro.correlation...X.Y"          "tBodyGyro.correlation...X.Z"         
+# [160] "tBodyGyro.correlation...Y.Z"          "tBodyGyroJerk.mean...X"               "tBodyGyroJerk.mean...Y"              
+# [163] "tBodyGyroJerk.mean...Z"               "tBodyGyroJerk.std...X"                "tBodyGyroJerk.std...Y"               
+# [166] "tBodyGyroJerk.std...Z"                "tBodyGyroJerk.mad...X"                "tBodyGyroJerk.mad...Y"               
+# [169] "tBodyGyroJerk.mad...Z"                "tBodyGyroJerk.max...X"                "tBodyGyroJerk.max...Y"               
+# [172] "tBodyGyroJerk.max...Z"                "tBodyGyroJerk.min...X"                "tBodyGyroJerk.min...Y"               
+# [175] "tBodyGyroJerk.min...Z"                "tBodyGyroJerk.sma.."                  "tBodyGyroJerk.energy...X"            
+# [178] "tBodyGyroJerk.energy...Y"             "tBodyGyroJerk.energy...Z"             "tBodyGyroJerk.iqr...X"               
+# [181] "tBodyGyroJerk.iqr...Y"                "tBodyGyroJerk.iqr...Z"                "tBodyGyroJerk.entropy...X"           
+# [184] "tBodyGyroJerk.entropy...Y"            "tBodyGyroJerk.entropy...Z"            "tBodyGyroJerk.arCoeff...X.1"         
+# [187] "tBodyGyroJerk.arCoeff...X.2"          "tBodyGyroJerk.arCoeff...X.3"          "tBodyGyroJerk.arCoeff...X.4"         
+# [190] "tBodyGyroJerk.arCoeff...Y.1"          "tBodyGyroJerk.arCoeff...Y.2"          "tBodyGyroJerk.arCoeff...Y.3"         
+# [193] "tBodyGyroJerk.arCoeff...Y.4"          "tBodyGyroJerk.arCoeff...Z.1"          "tBodyGyroJerk.arCoeff...Z.2"         
+# [196] "tBodyGyroJerk.arCoeff...Z.3"          "tBodyGyroJerk.arCoeff...Z.4"          "tBodyGyroJerk.correlation...X.Y"     
+# [199] "tBodyGyroJerk.correlation...X.Z"      "tBodyGyroJerk.correlation...Y.Z"      "tBodyAccMag.mean.."                  
+# [202] "tBodyAccMag.std.."                    "tBodyAccMag.mad.."                    "tBodyAccMag.max.."                   
+# [205] "tBodyAccMag.min.."                    "tBodyAccMag.sma.."                    "tBodyAccMag.energy.."                
+# [208] "tBodyAccMag.iqr.."                    "tBodyAccMag.entropy.."                "tBodyAccMag.arCoeff..1"              
+# [211] "tBodyAccMag.arCoeff..2"               "tBodyAccMag.arCoeff..3"               "tBodyAccMag.arCoeff..4"              
+# [214] "tGravityAccMag.mean.."                "tGravityAccMag.std.."                 "tGravityAccMag.mad.."                
+# [217] "tGravityAccMag.max.."                 "tGravityAccMag.min.."                 "tGravityAccMag.sma.."                
+# [220] "tGravityAccMag.energy.."              "tGravityAccMag.iqr.."                 "tGravityAccMag.entropy.."            
+# [223] "tGravityAccMag.arCoeff..1"            "tGravityAccMag.arCoeff..2"            "tGravityAccMag.arCoeff..3"           
+# [226] "tGravityAccMag.arCoeff..4"            "tBodyAccJerkMag.mean.."               "tBodyAccJerkMag.std.."               
+# [229] "tBodyAccJerkMag.mad.."                "tBodyAccJerkMag.max.."                "tBodyAccJerkMag.min.."               
+# [232] "tBodyAccJerkMag.sma.."                "tBodyAccJerkMag.energy.."             "tBodyAccJerkMag.iqr.."               
+# [235] "tBodyAccJerkMag.entropy.."            "tBodyAccJerkMag.arCoeff..1"           "tBodyAccJerkMag.arCoeff..2"          
+# [238] "tBodyAccJerkMag.arCoeff..3"           "tBodyAccJerkMag.arCoeff..4"           "tBodyGyroMag.mean.."                 
+# [241] "tBodyGyroMag.std.."                   "tBodyGyroMag.mad.."                   "tBodyGyroMag.max.."                  
+# [244] "tBodyGyroMag.min.."                   "tBodyGyroMag.sma.."                   "tBodyGyroMag.energy.."               
+# [247] "tBodyGyroMag.iqr.."                   "tBodyGyroMag.entropy.."               "tBodyGyroMag.arCoeff..1"             
+# [250] "tBodyGyroMag.arCoeff..2"              "tBodyGyroMag.arCoeff..3"              "tBodyGyroMag.arCoeff..4"             
+# [253] "tBodyGyroJerkMag.mean.."              "tBodyGyroJerkMag.std.."               "tBodyGyroJerkMag.mad.."              
+# [256] "tBodyGyroJerkMag.max.."               "tBodyGyroJerkMag.min.."               "tBodyGyroJerkMag.sma.."              
+# [259] "tBodyGyroJerkMag.energy.."            "tBodyGyroJerkMag.iqr.."               "tBodyGyroJerkMag.entropy.."          
+# [262] "tBodyGyroJerkMag.arCoeff..1"          "tBodyGyroJerkMag.arCoeff..2"          "tBodyGyroJerkMag.arCoeff..3"         
+# [265] "tBodyGyroJerkMag.arCoeff..4"          "fBodyAcc.mean...X"                    "fBodyAcc.mean...Y"                   
+# [268] "fBodyAcc.mean...Z"                    "fBodyAcc.std...X"                     "fBodyAcc.std...Y"                    
+# [271] "fBodyAcc.std...Z"                     "fBodyAcc.mad...X"                     "fBodyAcc.mad...Y"                    
+# [274] "fBodyAcc.mad...Z"                     "fBodyAcc.max...X"                     "fBodyAcc.max...Y"                    
+# [277] "fBodyAcc.max...Z"                     "fBodyAcc.min...X"                     "fBodyAcc.min...Y"                    
+# [280] "fBodyAcc.min...Z"                     "fBodyAcc.sma.."                       "fBodyAcc.energy...X"                 
+# [283] "fBodyAcc.energy...Y"                  "fBodyAcc.energy...Z"                  "fBodyAcc.iqr...X"                    
+# [286] "fBodyAcc.iqr...Y"                     "fBodyAcc.iqr...Z"                     "fBodyAcc.entropy...X"                
+# [289] "fBodyAcc.entropy...Y"                 "fBodyAcc.entropy...Z"                 "fBodyAcc.maxInds.X"                  
+# [292] "fBodyAcc.maxInds.Y"                   "fBodyAcc.maxInds.Z"                   "fBodyAcc.meanFreq...X"               
+# [295] "fBodyAcc.meanFreq...Y"                "fBodyAcc.meanFreq...Z"                "fBodyAcc.skewness...X"               
+# [298] "fBodyAcc.kurtosis...X"                "fBodyAcc.skewness...Y"                "fBodyAcc.kurtosis...Y"               
+# [301] "fBodyAcc.skewness...Z"                "fBodyAcc.kurtosis...Z"                "fBodyAcc.bandsEnergy...1.8"          
+# [304] "fBodyAcc.bandsEnergy...9.16"          "fBodyAcc.bandsEnergy...17.24"         "fBodyAcc.bandsEnergy...25.32"        
+# [307] "fBodyAcc.bandsEnergy...33.40"         "fBodyAcc.bandsEnergy...41.48"         "fBodyAcc.bandsEnergy...49.56"        
+# [310] "fBodyAcc.bandsEnergy...57.64"         "fBodyAcc.bandsEnergy...1.16"          "fBodyAcc.bandsEnergy...17.32"        
+# [313] "fBodyAcc.bandsEnergy...33.48"         "fBodyAcc.bandsEnergy...49.64"         "fBodyAcc.bandsEnergy...1.24"         
+# [316] "fBodyAcc.bandsEnergy...25.48"         "fBodyAcc.bandsEnergy...1.8.1"         "fBodyAcc.bandsEnergy...9.16.1"       
+# [319] "fBodyAcc.bandsEnergy...17.24.1"       "fBodyAcc.bandsEnergy...25.32.1"       "fBodyAcc.bandsEnergy...33.40.1"      
+# [322] "fBodyAcc.bandsEnergy...41.48.1"       "fBodyAcc.bandsEnergy...49.56.1"       "fBodyAcc.bandsEnergy...57.64.1"      
+# [325] "fBodyAcc.bandsEnergy...1.16.1"        "fBodyAcc.bandsEnergy...17.32.1"       "fBodyAcc.bandsEnergy...33.48.1"      
+# [328] "fBodyAcc.bandsEnergy...49.64.1"       "fBodyAcc.bandsEnergy...1.24.1"        "fBodyAcc.bandsEnergy...25.48.1"      
+# [331] "fBodyAcc.bandsEnergy...1.8.2"         "fBodyAcc.bandsEnergy...9.16.2"        "fBodyAcc.bandsEnergy...17.24.2"      
+# [334] "fBodyAcc.bandsEnergy...25.32.2"       "fBodyAcc.bandsEnergy...33.40.2"       "fBodyAcc.bandsEnergy...41.48.2"      
+# [337] "fBodyAcc.bandsEnergy...49.56.2"       "fBodyAcc.bandsEnergy...57.64.2"       "fBodyAcc.bandsEnergy...1.16.2"       
+# [340] "fBodyAcc.bandsEnergy...17.32.2"       "fBodyAcc.bandsEnergy...33.48.2"       "fBodyAcc.bandsEnergy...49.64.2"      
+# [343] "fBodyAcc.bandsEnergy...1.24.2"        "fBodyAcc.bandsEnergy...25.48.2"       "fBodyAccJerk.mean...X"               
+# [346] "fBodyAccJerk.mean...Y"                "fBodyAccJerk.mean...Z"                "fBodyAccJerk.std...X"                
+# [349] "fBodyAccJerk.std...Y"                 "fBodyAccJerk.std...Z"                 "fBodyAccJerk.mad...X"                
+# [352] "fBodyAccJerk.mad...Y"                 "fBodyAccJerk.mad...Z"                 "fBodyAccJerk.max...X"                
+# [355] "fBodyAccJerk.max...Y"                 "fBodyAccJerk.max...Z"                 "fBodyAccJerk.min...X"                
+# [358] "fBodyAccJerk.min...Y"                 "fBodyAccJerk.min...Z"                 "fBodyAccJerk.sma.."                  
+# [361] "fBodyAccJerk.energy...X"              "fBodyAccJerk.energy...Y"              "fBodyAccJerk.energy...Z"             
+# [364] "fBodyAccJerk.iqr...X"                 "fBodyAccJerk.iqr...Y"                 "fBodyAccJerk.iqr...Z"                
+# [367] "fBodyAccJerk.entropy...X"             "fBodyAccJerk.entropy...Y"             "fBodyAccJerk.entropy...Z"            
+# [370] "fBodyAccJerk.maxInds.X"               "fBodyAccJerk.maxInds.Y"               "fBodyAccJerk.maxInds.Z"              
+# [373] "fBodyAccJerk.meanFreq...X"            "fBodyAccJerk.meanFreq...Y"            "fBodyAccJerk.meanFreq...Z"           
+# [376] "fBodyAccJerk.skewness...X"            "fBodyAccJerk.kurtosis...X"            "fBodyAccJerk.skewness...Y"           
+# [379] "fBodyAccJerk.kurtosis...Y"            "fBodyAccJerk.skewness...Z"            "fBodyAccJerk.kurtosis...Z"           
+# [382] "fBodyAccJerk.bandsEnergy...1.8"       "fBodyAccJerk.bandsEnergy...9.16"      "fBodyAccJerk.bandsEnergy...17.24"    
+# [385] "fBodyAccJerk.bandsEnergy...25.32"     "fBodyAccJerk.bandsEnergy...33.40"     "fBodyAccJerk.bandsEnergy...41.48"    
+# [388] "fBodyAccJerk.bandsEnergy...49.56"     "fBodyAccJerk.bandsEnergy...57.64"     "fBodyAccJerk.bandsEnergy...1.16"     
+# [391] "fBodyAccJerk.bandsEnergy...17.32"     "fBodyAccJerk.bandsEnergy...33.48"     "fBodyAccJerk.bandsEnergy...49.64"    
+# [394] "fBodyAccJerk.bandsEnergy...1.24"      "fBodyAccJerk.bandsEnergy...25.48"     "fBodyAccJerk.bandsEnergy...1.8.1"    
+# [397] "fBodyAccJerk.bandsEnergy...9.16.1"    "fBodyAccJerk.bandsEnergy...17.24.1"   "fBodyAccJerk.bandsEnergy...25.32.1"  
+# [400] "fBodyAccJerk.bandsEnergy...33.40.1"   "fBodyAccJerk.bandsEnergy...41.48.1"   "fBodyAccJerk.bandsEnergy...49.56.1"  
+# [403] "fBodyAccJerk.bandsEnergy...57.64.1"   "fBodyAccJerk.bandsEnergy...1.16.1"    "fBodyAccJerk.bandsEnergy...17.32.1"  
+# [406] "fBodyAccJerk.bandsEnergy...33.48.1"   "fBodyAccJerk.bandsEnergy...49.64.1"   "fBodyAccJerk.bandsEnergy...1.24.1"   
+# [409] "fBodyAccJerk.bandsEnergy...25.48.1"   "fBodyAccJerk.bandsEnergy...1.8.2"     "fBodyAccJerk.bandsEnergy...9.16.2"   
+# [412] "fBodyAccJerk.bandsEnergy...17.24.2"   "fBodyAccJerk.bandsEnergy...25.32.2"   "fBodyAccJerk.bandsEnergy...33.40.2"  
+# [415] "fBodyAccJerk.bandsEnergy...41.48.2"   "fBodyAccJerk.bandsEnergy...49.56.2"   "fBodyAccJerk.bandsEnergy...57.64.2"  
+# [418] "fBodyAccJerk.bandsEnergy...1.16.2"    "fBodyAccJerk.bandsEnergy...17.32.2"   "fBodyAccJerk.bandsEnergy...33.48.2"  
+# [421] "fBodyAccJerk.bandsEnergy...49.64.2"   "fBodyAccJerk.bandsEnergy...1.24.2"    "fBodyAccJerk.bandsEnergy...25.48.2"  
+# [424] "fBodyGyro.mean...X"                   "fBodyGyro.mean...Y"                   "fBodyGyro.mean...Z"                  
+# [427] "fBodyGyro.std...X"                    "fBodyGyro.std...Y"                    "fBodyGyro.std...Z"                   
+# [430] "fBodyGyro.mad...X"                    "fBodyGyro.mad...Y"                    "fBodyGyro.mad...Z"                   
+# [433] "fBodyGyro.max...X"                    "fBodyGyro.max...Y"                    "fBodyGyro.max...Z"                   
+# [436] "fBodyGyro.min...X"                    "fBodyGyro.min...Y"                    "fBodyGyro.min...Z"                   
+# [439] "fBodyGyro.sma.."                      "fBodyGyro.energy...X"                 "fBodyGyro.energy...Y"                
+# [442] "fBodyGyro.energy...Z"                 "fBodyGyro.iqr...X"                    "fBodyGyro.iqr...Y"                   
+# [445] "fBodyGyro.iqr...Z"                    "fBodyGyro.entropy...X"                "fBodyGyro.entropy...Y"               
+# [448] "fBodyGyro.entropy...Z"                "fBodyGyro.maxInds.X"                  "fBodyGyro.maxInds.Y"                 
+# [451] "fBodyGyro.maxInds.Z"                  "fBodyGyro.meanFreq...X"               "fBodyGyro.meanFreq...Y"              
+# [454] "fBodyGyro.meanFreq...Z"               "fBodyGyro.skewness...X"               "fBodyGyro.kurtosis...X"              
+# [457] "fBodyGyro.skewness...Y"               "fBodyGyro.kurtosis...Y"               "fBodyGyro.skewness...Z"              
+# [460] "fBodyGyro.kurtosis...Z"               "fBodyGyro.bandsEnergy...1.8"          "fBodyGyro.bandsEnergy...9.16"        
+# [463] "fBodyGyro.bandsEnergy...17.24"        "fBodyGyro.bandsEnergy...25.32"        "fBodyGyro.bandsEnergy...33.40"       
+# [466] "fBodyGyro.bandsEnergy...41.48"        "fBodyGyro.bandsEnergy...49.56"        "fBodyGyro.bandsEnergy...57.64"       
+# [469] "fBodyGyro.bandsEnergy...1.16"         "fBodyGyro.bandsEnergy...17.32"        "fBodyGyro.bandsEnergy...33.48"       
+# [472] "fBodyGyro.bandsEnergy...49.64"        "fBodyGyro.bandsEnergy...1.24"         "fBodyGyro.bandsEnergy...25.48"       
+# [475] "fBodyGyro.bandsEnergy...1.8.1"        "fBodyGyro.bandsEnergy...9.16.1"       "fBodyGyro.bandsEnergy...17.24.1"     
+# [478] "fBodyGyro.bandsEnergy...25.32.1"      "fBodyGyro.bandsEnergy...33.40.1"      "fBodyGyro.bandsEnergy...41.48.1"     
+# [481] "fBodyGyro.bandsEnergy...49.56.1"      "fBodyGyro.bandsEnergy...57.64.1"      "fBodyGyro.bandsEnergy...1.16.1"      
+# [484] "fBodyGyro.bandsEnergy...17.32.1"      "fBodyGyro.bandsEnergy...33.48.1"      "fBodyGyro.bandsEnergy...49.64.1"     
+# [487] "fBodyGyro.bandsEnergy...1.24.1"       "fBodyGyro.bandsEnergy...25.48.1"      "fBodyGyro.bandsEnergy...1.8.2"       
+# [490] "fBodyGyro.bandsEnergy...9.16.2"       "fBodyGyro.bandsEnergy...17.24.2"      "fBodyGyro.bandsEnergy...25.32.2"     
+# [493] "fBodyGyro.bandsEnergy...33.40.2"      "fBodyGyro.bandsEnergy...41.48.2"      "fBodyGyro.bandsEnergy...49.56.2"     
+# [496] "fBodyGyro.bandsEnergy...57.64.2"      "fBodyGyro.bandsEnergy...1.16.2"       "fBodyGyro.bandsEnergy...17.32.2"     
+# [499] "fBodyGyro.bandsEnergy...33.48.2"      "fBodyGyro.bandsEnergy...49.64.2"      "fBodyGyro.bandsEnergy...1.24.2"      
+# [502] "fBodyGyro.bandsEnergy...25.48.2"      "fBodyAccMag.mean.."                   "fBodyAccMag.std.."                   
+# [505] "fBodyAccMag.mad.."                    "fBodyAccMag.max.."                    "fBodyAccMag.min.."                   
+# [508] "fBodyAccMag.sma.."                    "fBodyAccMag.energy.."                 "fBodyAccMag.iqr.."                   
+# [511] "fBodyAccMag.entropy.."                "fBodyAccMag.maxInds"                  "fBodyAccMag.meanFreq.."              
+# [514] "fBodyAccMag.skewness.."               "fBodyAccMag.kurtosis.."               "fBodyBodyAccJerkMag.mean.."          
+# [517] "fBodyBodyAccJerkMag.std.."            "fBodyBodyAccJerkMag.mad.."            "fBodyBodyAccJerkMag.max.."           
+# [520] "fBodyBodyAccJerkMag.min.."            "fBodyBodyAccJerkMag.sma.."            "fBodyBodyAccJerkMag.energy.."        
+# [523] "fBodyBodyAccJerkMag.iqr.."            "fBodyBodyAccJerkMag.entropy.."        "fBodyBodyAccJerkMag.maxInds"         
+# [526] "fBodyBodyAccJerkMag.meanFreq.."       "fBodyBodyAccJerkMag.skewness.."       "fBodyBodyAccJerkMag.kurtosis.."      
+# [529] "fBodyBodyGyroMag.mean.."              "fBodyBodyGyroMag.std.."               "fBodyBodyGyroMag.mad.."              
+# [532] "fBodyBodyGyroMag.max.."               "fBodyBodyGyroMag.min.."               "fBodyBodyGyroMag.sma.."              
+# [535] "fBodyBodyGyroMag.energy.."            "fBodyBodyGyroMag.iqr.."               "fBodyBodyGyroMag.entropy.."          
+# [538] "fBodyBodyGyroMag.maxInds"             "fBodyBodyGyroMag.meanFreq.."          "fBodyBodyGyroMag.skewness.."         
+# [541] "fBodyBodyGyroMag.kurtosis.."          "fBodyBodyGyroJerkMag.mean.."          "fBodyBodyGyroJerkMag.std.."          
+# [544] "fBodyBodyGyroJerkMag.mad.."           "fBodyBodyGyroJerkMag.max.."           "fBodyBodyGyroJerkMag.min.."          
+# [547] "fBodyBodyGyroJerkMag.sma.."           "fBodyBodyGyroJerkMag.energy.."        "fBodyBodyGyroJerkMag.iqr.."          
+# [550] "fBodyBodyGyroJerkMag.entropy.."       "fBodyBodyGyroJerkMag.maxInds"         "fBodyBodyGyroJerkMag.meanFreq.."     
+# [553] "fBodyBodyGyroJerkMag.skewness.."      "fBodyBodyGyroJerkMag.kurtosis.."      "angle.tBodyAccMean.gravity."         
+# [556] "angle.tBodyAccJerkMean..gravityMean." "angle.tBodyGyroMean.gravityMean."     "angle.tBodyGyroJerkMean.gravityMean."
+# [559] "angle.X.gravityMean."                 "angle.Y.gravityMean."                 "angle.Z.gravityMean."                
+```
+
+
+```{r}
+## --- measured features -- activityF
+trainX <- read.table("train/X_train.txt")   # dim(trainX)     # [1] 7352  561
+names(trainX) <- FeatureNames #activityF[,2]
+```
+trainX contains 7352 rows of measurements of activity features from the all subjects belonging to the set of TRAINING data, with corresponding activity feature descriptions for 561 column variable names.
+
+```{r}
+testX <- read.table("test/X_test.txt")   # dim(testX)      # [1] 2947  561
+names(testX) <- FeatureNames #activityF[,2]
+```
+testX contains 2947 rows of measurements of activity features from the all subjects belonging to the set of TEST data, with corresponding activity feature descriptions for 561 column variable names.
+
+
+```{r}
+## --- measured activity -- activityL || activityL[trainY$activity,]
+trainY <- read.table("train/y_train.txt")   # dim(trainY)     # [1] 7352    1
+names(trainY) <- "activity"
+
+unique(trainY)
+#     activity
+# 1          5
+# 28         4
+# 52         6
+# 79         1
+# 126        3
+# 151        2
+```
+trainY is a 7352row vector listing corresponding activity coded between 1 to 6 for the types of activity (e.g. "LAYING" ; "SITTING" ; "STANDING"; "WALKING"; "WALKING_DOWNSTAIRS" ; "WALKING_UPSTAIRS" ) performed by subjects belonging to the TRAINING group.
+
+```{r}
+testY <- read.table("test/y_test.txt")   # dim(testY)      # [1] 2947    1
+names(testY) <- "activity"
+
+unique(testY)
+#     activity
+# 1          5
+# 32         4
+# 56         6
+# 80         1
+# 110        3
+# 134        2
+```
+testY is a 2947row vector listing corresponding activity coded between 1 to 6 for the types of activity (e.g. "LAYING" ; "SITTING" ; "STANDING"; "WALKING"; "WALKING_DOWNSTAIRS" ; "WALKING_UPSTAIRS" ) performed by subjects belonging to the TEST group.
+
+
+1.5 Participant IDs that correspond to the measured activities and activity features are read for both training and test datasets. They are assigned with a variable name: "subjID". To faciliate data-handling when both sets of data are combined, an extra variable "datatype" is added using mutate() to help identify if they belong to the training or test dataset.
+
+```{r}
+## --- subjs in training & test groups
+trainSubj <- read.table("train/subject_train.txt")   # dim(trainSubj)  # [1] 7352    1
+names(trainSubj) <- "subjID"
+trainSubj <- trainSubj %>% mutate(datatype = "train")   # dim(trainSubj)  # [1] 7352    2
+
+unique(trainSubj)
+#      subjID datatype
+# 1         1    train
+# 348       3    train
+# 689       5    train
+# 991       6    train
+# 1316      7    train
+# 1624      8    train
+# 1905     11    train
+# 2221     14    train
+# 2544     15    train
+# 2872     16    train
+# 3238     17    train
+# 3606     19    train
+# 3966     21    train
+# 4374     22    train
+# 4695     23    train
+# 5067     25    train
+# 5476     26    train
+# 5868     27    train
+# 6244     28    train
+# 6626     29    train
+# 6970     30    train
+```
+trainSubj is a 7352rows by 2columns matrix of subject ID codes ranging from 1:30 (inclusive) identifying subjects who belong to the TRAINING group. The rows correspond to those in trainY and trainX. 
+
+```{r}
+testSubj <- read.table("test/subject_test.txt")   # dim(testSubj)   # [1] 2947    1
+names(testSubj) <- "subjID"
+testSubj <- testSubj %>% mutate(datatype = "test")   # dim(testSubj)   # [1] 2947    2   
+
+unique(testSubj)
+#      subjID datatype
+# 1         2     test
+# 303       4     test
+# 620       9     test
+# 908      10     test
+# 1202     12     test
+# 1522     13     test
+# 1849     18     test
+# 2213     20     test
+# 2567     24     test
+```
+testSubj is a 2947rows by 2columns matrix of subject ID codes ranging from 1:30 (inclusive) identifying subjects who belong to the TEST group. The rows correspond to those in testY and testX. 
+
+
+
+##### --- 2 COMBINE & MERGE DATA --------------------------------------------------------------
+
+```{r}
+## --- COMBINE components of train DATA & test DATA --------------------------------------------------------------
+## --- combineTRAINdata
+trainD <- tbl_df(cbind(trainSubj,trainY,trainX))   # Source: local data frame [7,352 x 564]
+```
+trainD is a column-wise combination of trainSubj, trainY and trainX to form a 7352rows by 564cols matrix
+
+```{r}
+## --- combineTRAINdata
+testD <- tbl_df(cbind(testSubj,testY,testX))   # Source: local data frame [2,947 x 564]
+```
+testD is a column-wise combination of testSubj, testY and testX to form a 2947rows by 564cols matrix
+
+
+
+```{r}
+## --- MERGE DATA --------------------------------------------------------------
+## combine train&testD
+D <- rbind(trainD,testD)   # Source: local data frame [10,299 x 564]
+```
+D is a [10,299 x 564 matrix] result of merging trainD and testD by combining (appending) all rows from both tables.
+
+
+
+##### --- 3 EXTRACT Mean & Std Measures --------------------------------------------------------------
+
+```{r}
+D1 <- D %>% select(subjID, datatype, activity, contains("mean"), contains("std") ) # dim: [10,299 x 86 +3]
+```
+D1 is a subset table derived from D that contains only the Activity Feature Measures' Mean and Standard Deviation values for all subjects and activity performed. It has 10299 rows and 89columns.
+
+The column variable names of D1 are as follows:
+```{r}
+# names(D1)
+# [1] "subjID"                               "datatype"                             "activity"
+# [4] "tBodyAcc.mean...X"                    "tBodyAcc.mean...Y"                    "tBodyAcc.mean...Z"
+# [7] "tGravityAcc.mean...X"                 "tGravityAcc.mean...Y"                 "tGravityAcc.mean...Z"
+# [10] "tBodyAccJerk.mean...X"                "tBodyAccJerk.mean...Y"                "tBodyAccJerk.mean...Z"
+# [13] "tBodyGyro.mean...X"                   "tBodyGyro.mean...Y"                   "tBodyGyro.mean...Z"
+# [16] "tBodyGyroJerk.mean...X"               "tBodyGyroJerk.mean...Y"               "tBodyGyroJerk.mean...Z"
+# [19] "tBodyAccMag.mean.."                   "tGravityAccMag.mean.."                "tBodyAccJerkMag.mean.."
+# [22] "tBodyGyroMag.mean.."                  "tBodyGyroJerkMag.mean.."              "fBodyAcc.mean...X"
+# [25] "fBodyAcc.mean...Y"                    "fBodyAcc.mean...Z"                    "fBodyAcc.meanFreq...X"
+# [28] "fBodyAcc.meanFreq...Y"                "fBodyAcc.meanFreq...Z"                "fBodyAccJerk.mean...X"
+# [31] "fBodyAccJerk.mean...Y"                "fBodyAccJerk.mean...Z"                "fBodyAccJerk.meanFreq...X"
+# [34] "fBodyAccJerk.meanFreq...Y"            "fBodyAccJerk.meanFreq...Z"            "fBodyGyro.mean...X"
+# [37] "fBodyGyro.mean...Y"                   "fBodyGyro.mean...Z"                   "fBodyGyro.meanFreq...X"
+# [40] "fBodyGyro.meanFreq...Y"               "fBodyGyro.meanFreq...Z"               "fBodyAccMag.mean.."
+# [43] "fBodyAccMag.meanFreq.."               "fBodyBodyAccJerkMag.mean.."           "fBodyBodyAccJerkMag.meanFreq.."
+# [46] "fBodyBodyGyroMag.mean.."              "fBodyBodyGyroMag.meanFreq.."          "fBodyBodyGyroJerkMag.mean.."
+# [49] "fBodyBodyGyroJerkMag.meanFreq.."      "angle.tBodyAccMean.gravity."          "angle.tBodyAccJerkMean..gravityMean."
+# [52] "angle.tBodyGyroMean.gravityMean."     "angle.tBodyGyroJerkMean.gravityMean." "angle.X.gravityMean."
+# [55] "angle.Y.gravityMean."                 "angle.Z.gravityMean."                 "tBodyAcc.std...X"
+# [58] "tBodyAcc.std...Y"                     "tBodyAcc.std...Z"                     "tGravityAcc.std...X"
+# [61] "tGravityAcc.std...Y"                  "tGravityAcc.std...Z"                  "tBodyAccJerk.std...X"
+# [64] "tBodyAccJerk.std...Y"                 "tBodyAccJerk.std...Z"                 "tBodyGyro.std...X"
+# [67] "tBodyGyro.std...Y"                    "tBodyGyro.std...Z"                    "tBodyGyroJerk.std...X"
+# [70] "tBodyGyroJerk.std...Y"                "tBodyGyroJerk.std...Z"                "tBodyAccMag.std.."
+# [73] "tGravityAccMag.std.."                 "tBodyAccJerkMag.std.."                "tBodyGyroMag.std.."
+# [76] "tBodyGyroJerkMag.std.."               "fBodyAcc.std...X"                     "fBodyAcc.std...Y"
+# [79] "fBodyAcc.std...Z"                     "fBodyAccJerk.std...X"                 "fBodyAccJerk.std...Y"
+# [82] "fBodyAccJerk.std...Z"                 "fBodyGyro.std...X"                    "fBodyGyro.std...Y"
+# [85] "fBodyGyro.std...Z"                    "fBodyAccMag.std.."                    "fBodyBodyAccJerkMag.std.."
+# [88] "fBodyBodyGyroMag.std.."               "fBodyBodyGyroJerkMag.std.."
+```
+
+##### --- 4 USE Descriptive Activity Names --------------------------------------------------------------
+
+```{r}
+D1$activity <- activityL[D1$activity,2] #%>% print
+```
+After substituting activity codes with activity descriptions, the levels of activity in D1 now reflect the activity descriptions:
+
+```{r}
+# levels(D1$activity)
+# [1] "LAYING"             "SITTING"            "STANDING"           "WALKING"
+# [5] "WALKING_DOWNSTAIRS" "WALKING_UPSTAIRS"
+```
+
+
+##### --- 5 DERIVE Variable Means GROUPED by Subj & Activity --------------------------------------------------------------
+
+```{r}
+## --- MEANS of variables GROUPed by subjID, activity (& datatype) --------------------------------------------------------------
+D2_tidymeans <- D1 %>% group_by(subjID, datatype, activity) %>% summarise_each(funs(mean), -subjID:-activity )
+```
+D2_tidymeans is a 180row by 89 column matrix summary of the means of activity feature variables in D1 which are grouped by the activity performed and by each subject (regardless of their group assignment). Each subject has 6 rows of data values; a total of 180rows.
+
+An overview of D2_tidymeans:
+```{r}
+# D2_tidymeans
+# Source: local data frame [180 x 89]
+# Groups: subjID, datatype [?]
+#
+# subjID datatype           activity tBodyAcc.mean...X tBodyAcc.mean...Y tBodyAcc.mean...Z tGravityAcc.mean...X
+# (int)    (chr)             (fctr)             (dbl)             (dbl)             (dbl)                (dbl)
+# 1       1    train             LAYING         0.2215982      -0.040513953        -0.1132036           -0.2488818
+# 2       1    train            SITTING         0.2612376      -0.001308288        -0.1045442            0.8315099
+# 3       1    train           STANDING         0.2789176      -0.016137590        -0.1106018            0.9429520
+# 4       1    train            WALKING         0.2773308      -0.017383819        -0.1111481            0.9352232
+# 5       1    train WALKING_DOWNSTAIRS         0.2891883      -0.009918505        -0.1075662            0.9318744
+# 6       1    train   WALKING_UPSTAIRS         0.2554617      -0.023953149        -0.0973020            0.8933511
+# 7       2     test             LAYING         0.2813734      -0.018158740        -0.1072456           -0.5097542
+# 8       2     test            SITTING         0.2770874      -0.015687994        -0.1092183            0.9404773
+# 9       2     test           STANDING         0.2779115      -0.018420827        -0.1059085            0.8969286
+# 10      2     test            WALKING         0.2764266      -0.018594920        -0.1055004            0.9130173
+# ..    ...      ...                ...               ...               ...               ...                  ...
+# Variables not shown: tGravityAcc.mean...Y (dbl), tGravityAcc.mean...Z (dbl), tBodyAccJerk.mean...X (dbl),
+# tBodyAccJerk.mean...Y (dbl), tBodyAccJerk.mean...Z (dbl), tBodyGyro.mean...X (dbl), tBodyGyro.mean...Y (dbl),
+# tBodyGyro.mean...Z (dbl), tBodyGyroJerk.mean...X (dbl), tBodyGyroJerk.mean...Y (dbl), tBodyGyroJerk.mean...Z (dbl),
+# tBodyAccMag.mean.. (dbl), tGravityAccMag.mean.. (dbl), tBodyAccJerkMag.mean.. (dbl), tBodyGyroMag.mean.. (dbl),
+# tBodyGyroJerkMag.mean.. (dbl), fBodyAcc.mean...X (dbl), fBodyAcc.mean...Y (dbl), fBodyAcc.mean...Z (dbl),
+# fBodyAcc.meanFreq...X (dbl), fBodyAcc.meanFreq...Y (dbl), fBodyAcc.meanFreq...Z (dbl), fBodyAccJerk.mean...X (dbl),
+# fBodyAccJerk.mean...Y (dbl), fBodyAccJerk.mean...Z (dbl), fBodyAccJerk.meanFreq...X (dbl), fBodyAccJerk.meanFreq...Y
+# (dbl), fBodyAccJerk.meanFreq...Z (dbl), fBodyGyro.mean...X (dbl), fBodyGyro.mean...Y (dbl), fBodyGyro.mean...Z
+# (dbl), fBodyGyro.meanFreq...X (dbl), fBodyGyro.meanFreq...Y (dbl), fBodyGyro.meanFreq...Z (dbl), fBodyAccMag.mean..
+# (dbl), fBodyAccMag.meanFreq.. (dbl), fBodyBodyAccJerkMag.mean.. (dbl), fBodyBodyAccJerkMag.meanFreq.. (dbl),
+# fBodyBodyGyroMag.mean.. (dbl), fBodyBodyGyroMag.meanFreq.. (dbl), fBodyBodyGyroJerkMag.mean.. (dbl),
+# fBodyBodyGyroJerkMag.meanFreq.. (dbl), angle.tBodyAccMean.gravity. (dbl), angle.tBodyAccJerkMean..gravityMean.
+# (dbl), angle.tBodyGyroMean.gravityMean. (dbl), angle.tBodyGyroJerkMean.gravityMean. (dbl), angle.X.gravityMean.
+# (dbl), angle.Y.gravityMean. (dbl), angle.Z.gravityMean. (dbl), tBodyAcc.std...X (dbl), tBodyAcc.std...Y (dbl),
+# tBodyAcc.std...Z (dbl), tGravityAcc.std...X (dbl), tGravityAcc.std...Y (dbl), tGravityAcc.std...Z (dbl),
+# tBodyAccJerk.std...X (dbl), tBodyAccJerk.std...Y (dbl), tBodyAccJerk.std...Z (dbl), tBodyGyro.std...X (dbl),
+# tBodyGyro.std...Y (dbl), tBodyGyro.std...Z (dbl), tBodyGyroJerk.std...X (dbl), tBodyGyroJerk.std...Y (dbl),
+# tBodyGyroJerk.std...Z (dbl), tBodyAccMag.std.. (dbl), tGravityAccMag.std.. (dbl), tBodyAccJerkMag.std.. (dbl),
+# tBodyGyroMag.std.. (dbl), tBodyGyroJerkMag.std.. (dbl), fBodyAcc.std...X (dbl), fBodyAcc.std...Y (dbl),
+# fBodyAcc.std...Z (dbl), fBodyAccJerk.std...X (dbl), fBodyAccJerk.std...Y (dbl), fBodyAccJerk.std...Z (dbl),
+# fBodyGyro.std...X (dbl), fBodyGyro.std...Y (dbl), fBodyGyro.std...Z (dbl), fBodyAccMag.std.. (dbl),
+# fBodyBodyAccJerkMag.std.. (dbl), fBodyBodyGyroMag.std.. (dbl), fBodyBodyGyroJerkMag.std.. (dbl)
+#
+```
+
+
+##### --- 6 WRITE out tidymeans data --------------------------------------------------------------
+
+```{r}
+# --- WRITE output D2_tidymeans to working-directory...
+# write.table(D2_tidymeans, file = "outputD2_tidymeans.txt", row.name=FALSE, col.names = names(D2_tidymeans), sep = ",")
+```
+** If you save the file as "outputD2_tidymeans.txt" you can read the file from its directory:
+```{r}
+outputD2_tidymeans <- read.csv("outputD2_tidymeans.txt")
+View(outputD2_tidymeans)
+```
+outputD2_tidymeans is the same as D2_tidymeans

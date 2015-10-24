@@ -1,10 +1,10 @@
 
 ##### Assignment for Getting & Cleaning Data
-README for run_analysis.R -- describing how the script works: coded by h-rm_tan 22-23Oct2015
+README for run_analysis.R -- describing how the script works: coded by h-rm_tan 22-24_Oct2015
 
 ##### REFs:
-http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones
-https://www.youtube.com/watch?v=XOEN9W05_4A
+RAW DATA URL: http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones
+Activities measured shown in video: https://www.youtube.com/watch?v=XOEN9W05_4A
 
 (i) The code should work if you have run_analysis.R and the unzipped "UCI HAR Dataset" data folder present in the working directory of R/Rstudio. Otherwise, paths need to be set, for example:
 
@@ -81,7 +81,7 @@ testSubj <- testSubj %>% mutate(datatype = "test")
 2.1 First -- the script combines the feature measurements for corresponding activity performed by each participant belonging to either the training or test group. This is achieved using cbind() to combine the column-variables.
 
 ```{r}
-## --- COMBINE components of train& test DATA --------------------------------------------------------------
+## --- COMBINE components of train DATA & test DATA --------------------------------------------------------------
 ## --- combineTRAINdata
 trainD <- tbl_df(cbind(trainSubj,trainY,trainX))
 
