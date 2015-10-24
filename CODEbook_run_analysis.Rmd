@@ -9,7 +9,6 @@ The experiment: a group of 30 volunteers (age: 19-48 years); each individual per
 Acquired Signas: Sensor signals (accelerometer and gyroscope) were pre-processed by applying noise filters and sampled in fixed-width sliding windows of 2.56 sec with 50% overlap (128 readings/window). The sensor acceleration signal, which consists of gravitational and body motion components, was separated using a Butterworth low-pass filter into body acceleration and gravity. A filter with 0.3 Hz cutoff frequency was used given the gravitational force is assumed to have only low frequency components. From each window, a vector of features (See 'features_info.txt') was derived by calculating variables from the time and frequency domain.  
 
 ######The different files provide for each record :
-======================================
 - (i) Triaxial acceleration (standard gravity unit="g") from the accelerometer (total acceleration) and the estimated body acceleration.
 - (ii) Triaxial Angular velocity (unit="radians/second"") from the gyroscope. 
 
@@ -25,9 +24,8 @@ Acquired Signas: Sensor signals (accelerometer and gyroscope) were pre-processed
 - 'test/X_test.txt': Test set.
 - 'test/y_test.txt': Test labels.
 -
+
 ======================================
-
-
 ##### Variables' Descriptions : the variables that run_analysis.R spews out at each stage are as follows :
 
 ###### --- (1) READ FILES & ADD VARIABLE NAMES --------------------------------------------------------------
