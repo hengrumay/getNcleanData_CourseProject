@@ -1,7 +1,7 @@
 
-##### Assignment for Getting & Cleaning Data: README_run_analysis.Rmd 
+#### Assignment for Getting & Cleaning Data: README_run_analysis.Rmd 
 <b>README for run_analysis.R -- describing how the script works</b> -- coded by h-rm_tan 22-24_Oct2015.
-<br><i>*Refer to CODEbook_run_analysis.Rmd for description of variables.</i>
+<br><i>*Refer to <a href="https://github.com/hengrumay/getNcleanData_CourseProject/blob/master/CODEbook_run_analysis.Rmd" target="_blank"> CODEbook_run_analysis.Rmd </a> for description of variables.</i>
 
 ##### REFs:
 RAW DATA URL: http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones 

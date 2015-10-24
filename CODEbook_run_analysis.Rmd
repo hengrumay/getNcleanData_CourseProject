@@ -1,7 +1,7 @@
 
-##### Assignment for Getting & Cleaning Data : CODEbook_run_analysis.Rmd
+#### Assignment for Getting & Cleaning Data : CODEbook_run_analysis.Rmd
 <b>CODEbook for run_analysis.R -- describing the variables</b> -- coded by h-rm_tan 22-24_Oct2015
-<br><i>*Refer to README_run_analysis.Rmd for details on what the script does.</i>
+<br><i>*Refer to <a href="https://github.com/hengrumay/getNcleanData_CourseProject/blob/master/README_run_analysis.Rmd" target="_blank"> README_run_analysis.Rmd	</a> for details on what the script does.</i>
 
 ======================================
 ###### Information about the DATA 
