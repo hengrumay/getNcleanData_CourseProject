@@ -212,7 +212,7 @@ trainD <- tbl_df(cbind(trainSubj,trainY,trainX))   # Source: local data frame [7
 testD <- tbl_df(cbind(testSubj,testY,testX))   # Source: local data frame [2,947 x 564]
 ```
 
-<b>D</b> is a [10,299 x 564 matrix] result of merging trainD and testD by combining (appending) all rows from both tables.
+<b>D</b> is a [10,299 x 564 data-table] result of merging trainD and testD by combining (appending) all rows from both tables.
 ```{r}
 ## MERGE train&testD
 D <- rbind(trainD,testD)   # Source: local data frame [10,299 x 564]
