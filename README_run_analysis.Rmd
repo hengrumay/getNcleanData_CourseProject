@@ -1,12 +1,13 @@
 
-##### Assignment for Getting & Cleaning Data
+##### Assignment for Getting & Cleaning Data: README_run_analysis.Rmd 
 README for run_analysis.R -- describing how the script works: coded by h-rm_tan 22-24_Oct2015
+Refer to CODEbook_run_analysis.Rmd for description of variables.
 
 ##### REFs:
 RAW DATA URL: http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones
 Activities measured shown in video: https://www.youtube.com/watch?v=XOEN9W05_4A
 
-(i) The code should work if you have run_analysis.R and the unzipped "UCI HAR Dataset" data folder present in the working directory of R/Rstudio. Otherwise, paths need to be set, for example:
+(i) The code should work if you have run_analysis.R and the unzipped "UCI HAR Dataset" data folder present in the working directory of R/Rstudio. Otherwise, paths need to be set, for example (as commented code):
 
 ```{r}
 ## --- SET PATHS --------------------------------------------------------------
@@ -14,24 +15,24 @@ Activities measured shown in video: https://www.youtube.com/watch?v=XOEN9W05_4A
 # setwd(datapath)
 ```
 
-(ii) Load the required dplr package.
+(ii) The required dplr package is loaded...
 ```{r}
 ## --- LIBRARIES --------------------------------------------------------------
 library(dplyr)
 ```
 
-##### --- 1 READ FILES & ADD VARIABLE NAMES --------------------------------------------------------------
+##### --- (1) READ FILES & ADD VARIABLE NAMES --------------------------------------------------------------
 (1) All the relevant files are being read in 1st by the code as follows:
 
 1.1 First the activity variable description files are being read.
 ```{r}
 ## --- variables' descriptions
-activityL <- read.table("/activity_labels.txt")   # dim(activityL)  # [1] 6 2
+activityL <- read.table("/activity_labels.txt")   
 
-activityF <- read.table("/features.txt")   # dim(activityF)  # [1] 561   2
+activityF <- read.table("/features.txt")   
 ```
 
-1.2 *It was discovered that the descriptions of activity features are actually not in a right format for use as variable 'names' so the script resolves this by "making names" out of the vector-column of character strings from "features.txt". This will enable one to apply the select() function subsequently. This also allows the measurement data to eb appropriately labelled with descriptive variable names. 
+1.2 *It was discovered that the descriptions of activity features are actually not in a right format for use as variable 'names' so the script resolves this by "making names" out of the vector-column of character strings from activityF. This will enable one to apply the select() function subsequently. This also allows the measurement data to eb appropriately labelled with descriptive variable names. 
 
 ```{r}
 ## --- make.names for feature variables
@@ -44,21 +45,21 @@ The activity feature names are also assigned to the corresponding variables for 
 
 ```{r}
 ## --- measured features -- activityF
-trainX <- read.table("train/X_train.txt")   # dim(trainX)     # [1] 7352  561
-names(trainX) <- FeatureNames #activityF[,2]
+trainX <- read.table("train/X_train.txt")   
+names(trainX) <- FeatureNames 
 
-testX <- read.table("test/X_test.txt")   # dim(testX)      # [1] 2947  561
-names(testX) <- FeatureNames #activityF[,2]
+testX <- read.table("test/X_test.txt")   
+names(testX) <- FeatureNames 
 ```
 
 1.4 Next the coded activity data corresponding to the measured activity features for both training and test datasets are read and correspondingly assigned with an "activity" variable name.
 
 ```{r}
 ## --- measured activity -- activityL || activityL[trainY$activity,]
-trainY <- read.table("train/y_train.txt")   # dim(trainY)     # [1] 7352    1
+trainY <- read.table("train/y_train.txt")   
 names(trainY) <- "activity"
 
-testY <- read.table("test/y_test.txt")   # dim(testY)      # [1] 2947    1
+testY <- read.table("test/y_test.txt")   
 names(testY) <- "activity"
 ```
 
@@ -66,16 +67,16 @@ names(testY) <- "activity"
 
 ```{r}
 ## --- subjs in training & test groups
-trainSubj <- read.table("train/subject_train.txt")   # dim(trainSubj)  # [1] 7352    1
+trainSubj <- read.table("train/subject_train.txt")   
 names(trainSubj) <- "subjID"
 trainSubj <- trainSubj %>% mutate(datatype = "train")
 
-testSubj <- read.table("test/subject_test.txt")   # dim(testSubj)   # [1] 2947    1
+testSubj <- read.table("test/subject_test.txt")   
 names(testSubj) <- "subjID"
 testSubj <- testSubj %>% mutate(datatype = "test")
 ```
 
-##### --- 2 COMBINE & MERGE DATA --------------------------------------------------------------
+##### --- (2) COMBINE & MERGE DATA --------------------------------------------------------------
 (2) Now the corresponding parts of training and test datasets can be combined in 2 steps.
 
 2.1 First -- the script combines the feature measurements for corresponding activity performed by each participant belonging to either the training or test group. This is achieved using cbind() to combine the column-variables.
@@ -93,135 +94,46 @@ testD <- tbl_df(cbind(testSubj,testY,testX))
 
 ```{r}
 ## --- MERGE DATA --------------------------------------------------------------
-## combine train&testD
+## MERGE train&testD
 D <- rbind(trainD,testD)
 ```
 
-##### --- Free Up Working Memory --------------------------------------------------------------
+##### --- (optional) Free Up Working Memory --------------------------------------------------------------
 Now that both datasets are merged, we could free up some working memory by clearing all the training and test variables, where appropriate. However, this is currently commented out in the code. 
 ```{r}
 # # --- clear workingMEM...
 # rm(list = c( ls(pattern = "^test"), ls(pattern = "^train") ) )
 ```
 
-##### --- 3 EXTRACT Mean & Std Measures --------------------------------------------------------------
+##### --- (3) EXTRACT Mean & Std Measures --------------------------------------------------------------
 (3) Next the script selects only measured mean and standard deviation from the activity features variables. 
 The subjID, datatype and activity information is kept while selecting only variable names that contain either "mean" or "std" using a chained process of select(). The output is assigned as "D1".
 
 ```{r}
-D1 <- D %>% select(subjID, datatype, activity, contains("mean"), contains("std") ) # dim: [10,299 x 86 +3]
+D1 <- D %>% select(subjID, datatype, activity, contains("mean"), contains("std") ) 
 ```
 
-##### --- 4 USE Descriptive Activity Names --------------------------------------------------------------
+##### --- (4) USE Descriptive Activity Names --------------------------------------------------------------
 (4) Subsequently, the exisiting activity codes [1:6] are replaced with their corresponding activity descriptions: "LAYING" ; "SITTING" ; "STANDING"; "WALKING"; "WALKING_DOWNSTAIRS" ; "WALKING_UPSTAIRS". This is achieved by indexing the activity variable, which ranges from 1 to 6, into the activity label vector "activityL" and substituting this as the activity variable in D1 in a single step.
 
 ```{r}
 D1$activity <- activityL[D1$activity,2] #%>% print
 ```
 
-```{r}
-# levels(D1$activity)
-# [1] "LAYING"             "SITTING"            "STANDING"           "WALKING"
-# [5] "WALKING_DOWNSTAIRS" "WALKING_UPSTAIRS"
-
-# names(D1)
-# [1] "subjID"                               "datatype"                             "activity"
-# [4] "tBodyAcc.mean...X"                    "tBodyAcc.mean...Y"                    "tBodyAcc.mean...Z"
-# [7] "tGravityAcc.mean...X"                 "tGravityAcc.mean...Y"                 "tGravityAcc.mean...Z"
-# [10] "tBodyAccJerk.mean...X"                "tBodyAccJerk.mean...Y"                "tBodyAccJerk.mean...Z"
-# [13] "tBodyGyro.mean...X"                   "tBodyGyro.mean...Y"                   "tBodyGyro.mean...Z"
-# [16] "tBodyGyroJerk.mean...X"               "tBodyGyroJerk.mean...Y"               "tBodyGyroJerk.mean...Z"
-# [19] "tBodyAccMag.mean.."                   "tGravityAccMag.mean.."                "tBodyAccJerkMag.mean.."
-# [22] "tBodyGyroMag.mean.."                  "tBodyGyroJerkMag.mean.."              "fBodyAcc.mean...X"
-# [25] "fBodyAcc.mean...Y"                    "fBodyAcc.mean...Z"                    "fBodyAcc.meanFreq...X"
-# [28] "fBodyAcc.meanFreq...Y"                "fBodyAcc.meanFreq...Z"                "fBodyAccJerk.mean...X"
-# [31] "fBodyAccJerk.mean...Y"                "fBodyAccJerk.mean...Z"                "fBodyAccJerk.meanFreq...X"
-# [34] "fBodyAccJerk.meanFreq...Y"            "fBodyAccJerk.meanFreq...Z"            "fBodyGyro.mean...X"
-# [37] "fBodyGyro.mean...Y"                   "fBodyGyro.mean...Z"                   "fBodyGyro.meanFreq...X"
-# [40] "fBodyGyro.meanFreq...Y"               "fBodyGyro.meanFreq...Z"               "fBodyAccMag.mean.."
-# [43] "fBodyAccMag.meanFreq.."               "fBodyBodyAccJerkMag.mean.."           "fBodyBodyAccJerkMag.meanFreq.."
-# [46] "fBodyBodyGyroMag.mean.."              "fBodyBodyGyroMag.meanFreq.."          "fBodyBodyGyroJerkMag.mean.."
-# [49] "fBodyBodyGyroJerkMag.meanFreq.."      "angle.tBodyAccMean.gravity."          "angle.tBodyAccJerkMean..gravityMean."
-# [52] "angle.tBodyGyroMean.gravityMean."     "angle.tBodyGyroJerkMean.gravityMean." "angle.X.gravityMean."
-# [55] "angle.Y.gravityMean."                 "angle.Z.gravityMean."                 "tBodyAcc.std...X"
-# [58] "tBodyAcc.std...Y"                     "tBodyAcc.std...Z"                     "tGravityAcc.std...X"
-# [61] "tGravityAcc.std...Y"                  "tGravityAcc.std...Z"                  "tBodyAccJerk.std...X"
-# [64] "tBodyAccJerk.std...Y"                 "tBodyAccJerk.std...Z"                 "tBodyGyro.std...X"
-# [67] "tBodyGyro.std...Y"                    "tBodyGyro.std...Z"                    "tBodyGyroJerk.std...X"
-# [70] "tBodyGyroJerk.std...Y"                "tBodyGyroJerk.std...Z"                "tBodyAccMag.std.."
-# [73] "tGravityAccMag.std.."                 "tBodyAccJerkMag.std.."                "tBodyGyroMag.std.."
-# [76] "tBodyGyroJerkMag.std.."               "fBodyAcc.std...X"                     "fBodyAcc.std...Y"
-# [79] "fBodyAcc.std...Z"                     "fBodyAccJerk.std...X"                 "fBodyAccJerk.std...Y"
-# [82] "fBodyAccJerk.std...Z"                 "fBodyGyro.std...X"                    "fBodyGyro.std...Y"
-# [85] "fBodyGyro.std...Z"                    "fBodyAccMag.std.."                    "fBodyBodyAccJerkMag.std.."
-# [88] "fBodyBodyGyroMag.std.."               "fBodyBodyGyroJerkMag.std.."
-```
-
-
-##### --- 5 DERIVE Variable Means GROUPED by Subj & Activity --------------------------------------------------------------
+##### --- (5) DERIVE Variable Means GROUPED by Subj & Activity --------------------------------------------------------------
 (5) Next the script creates a 2nd independent tidy data set from D1. 
-The new tiday data D2_tidymeans comprises gives information on the average of each of the feature variable for each variable and each subject.
+The new data D2_tidymeans contains information on the average of each of the activity feature variable for each activity and each subject.
 
 ```{r}
 ## --- MEANS of variables GROUPed by subjID, activity (& datatype) --------------------------------------------------------------
 D2_tidymeans <- D1 %>% group_by(subjID, datatype, activity) %>% summarise_each(funs(mean), -subjID:-activity )
 ```
 
-##### --- 6 WRITE out tidymeans data --------------------------------------------------------------
-(6) Finally the output D2_tidymeans is written out as a comma-separated text file "outputD2_tidymeans.txt", which could be read with read.csv() and viewed.
+##### --- (6) WRITE out tidymeans data --------------------------------------------------------------
+(6) Finally the output D2_tidymeans is written out as a comma-separated text file "outputD2_tidymeans.txt", which could be read with read.csv() and viewed in R/Rstudio.
 
 ```{r}
 # --- WRITE output D2_tidymeans to working-directory...
 write.table(D2_tidymeans, file = "outputD2_tidymeans.txt", row.name=FALSE, col.names = names(D2_tidymeans), sep = ",")
 ```
 
-
-** If you save the file as "outputD2_tidymeans.txt" you can read the file from its directory:
-```{r}
-# outputD2_tidymeans <- read.csv("outputD2_tidymeans.txt")
-# View(outputD2_tidymeans)
-```
-
-
-```{r}
-# D2_tidymeans
-# Source: local data frame [180 x 89]
-# Groups: subjID, datatype [?]
-#
-# subjID datatype           activity tBodyAcc.mean...X tBodyAcc.mean...Y tBodyAcc.mean...Z tGravityAcc.mean...X
-# (int)    (chr)             (fctr)             (dbl)             (dbl)             (dbl)                (dbl)
-# 1       1    train             LAYING         0.2215982      -0.040513953        -0.1132036           -0.2488818
-# 2       1    train            SITTING         0.2612376      -0.001308288        -0.1045442            0.8315099
-# 3       1    train           STANDING         0.2789176      -0.016137590        -0.1106018            0.9429520
-# 4       1    train            WALKING         0.2773308      -0.017383819        -0.1111481            0.9352232
-# 5       1    train WALKING_DOWNSTAIRS         0.2891883      -0.009918505        -0.1075662            0.9318744
-# 6       1    train   WALKING_UPSTAIRS         0.2554617      -0.023953149        -0.0973020            0.8933511
-# 7       2     test             LAYING         0.2813734      -0.018158740        -0.1072456           -0.5097542
-# 8       2     test            SITTING         0.2770874      -0.015687994        -0.1092183            0.9404773
-# 9       2     test           STANDING         0.2779115      -0.018420827        -0.1059085            0.8969286
-# 10      2     test            WALKING         0.2764266      -0.018594920        -0.1055004            0.9130173
-# ..    ...      ...                ...               ...               ...               ...                  ...
-# Variables not shown: tGravityAcc.mean...Y (dbl), tGravityAcc.mean...Z (dbl), tBodyAccJerk.mean...X (dbl),
-# tBodyAccJerk.mean...Y (dbl), tBodyAccJerk.mean...Z (dbl), tBodyGyro.mean...X (dbl), tBodyGyro.mean...Y (dbl),
-# tBodyGyro.mean...Z (dbl), tBodyGyroJerk.mean...X (dbl), tBodyGyroJerk.mean...Y (dbl), tBodyGyroJerk.mean...Z (dbl),
-# tBodyAccMag.mean.. (dbl), tGravityAccMag.mean.. (dbl), tBodyAccJerkMag.mean.. (dbl), tBodyGyroMag.mean.. (dbl),
-# tBodyGyroJerkMag.mean.. (dbl), fBodyAcc.mean...X (dbl), fBodyAcc.mean...Y (dbl), fBodyAcc.mean...Z (dbl),
-# fBodyAcc.meanFreq...X (dbl), fBodyAcc.meanFreq...Y (dbl), fBodyAcc.meanFreq...Z (dbl), fBodyAccJerk.mean...X (dbl),
-# fBodyAccJerk.mean...Y (dbl), fBodyAccJerk.mean...Z (dbl), fBodyAccJerk.meanFreq...X (dbl), fBodyAccJerk.meanFreq...Y
-# (dbl), fBodyAccJerk.meanFreq...Z (dbl), fBodyGyro.mean...X (dbl), fBodyGyro.mean...Y (dbl), fBodyGyro.mean...Z
-# (dbl), fBodyGyro.meanFreq...X (dbl), fBodyGyro.meanFreq...Y (dbl), fBodyGyro.meanFreq...Z (dbl), fBodyAccMag.mean..
-# (dbl), fBodyAccMag.meanFreq.. (dbl), fBodyBodyAccJerkMag.mean.. (dbl), fBodyBodyAccJerkMag.meanFreq.. (dbl),
-# fBodyBodyGyroMag.mean.. (dbl), fBodyBodyGyroMag.meanFreq.. (dbl), fBodyBodyGyroJerkMag.mean.. (dbl),
-# fBodyBodyGyroJerkMag.meanFreq.. (dbl), angle.tBodyAccMean.gravity. (dbl), angle.tBodyAccJerkMean..gravityMean.
-# (dbl), angle.tBodyGyroMean.gravityMean. (dbl), angle.tBodyGyroJerkMean.gravityMean. (dbl), angle.X.gravityMean.
-# (dbl), angle.Y.gravityMean. (dbl), angle.Z.gravityMean. (dbl), tBodyAcc.std...X (dbl), tBodyAcc.std...Y (dbl),
-# tBodyAcc.std...Z (dbl), tGravityAcc.std...X (dbl), tGravityAcc.std...Y (dbl), tGravityAcc.std...Z (dbl),
-# tBodyAccJerk.std...X (dbl), tBodyAccJerk.std...Y (dbl), tBodyAccJerk.std...Z (dbl), tBodyGyro.std...X (dbl),
-# tBodyGyro.std...Y (dbl), tBodyGyro.std...Z (dbl), tBodyGyroJerk.std...X (dbl), tBodyGyroJerk.std...Y (dbl),
-# tBodyGyroJerk.std...Z (dbl), tBodyAccMag.std.. (dbl), tGravityAccMag.std.. (dbl), tBodyAccJerkMag.std.. (dbl),
-# tBodyGyroMag.std.. (dbl), tBodyGyroJerkMag.std.. (dbl), fBodyAcc.std...X (dbl), fBodyAcc.std...Y (dbl),
-# fBodyAcc.std...Z (dbl), fBodyAccJerk.std...X (dbl), fBodyAccJerk.std...Y (dbl), fBodyAccJerk.std...Z (dbl),
-# fBodyGyro.std...X (dbl), fBodyGyro.std...Y (dbl), fBodyGyro.std...Z (dbl), fBodyAccMag.std.. (dbl),
-# fBodyBodyAccJerkMag.std.. (dbl), fBodyBodyGyroMag.std.. (dbl), fBodyBodyGyroJerkMag.std.. (dbl)
-#
-```
