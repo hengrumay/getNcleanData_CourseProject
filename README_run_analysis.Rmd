@@ -1,10 +1,5 @@
 ---
 title: "README for run_analysis.R -- describing how the script works."
-output:
-  html_document:
-    highlight: espresso
-    keep_md: yes
-    theme: readable
 ---
 
 ##### Assignment for Getting & Cleaning Data
@@ -14,7 +9,7 @@ README Notes regarding run_analysis.R script : coded by h-rm_tan 22-23Oct2015
 http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones
 https://www.youtube.com/watch?v=XOEN9W05_4A
 
-(i) The code should work if you have run_analysis.R and the unzipped "UCI HAR Dataset" data folder present in the working directory of R/Rstudio. Otherwise, paths need to be set, e.g.:
+(i) The code should work if you have run_analysis.R and the unzipped "UCI HAR Dataset" data folder present in the working directory of R/Rstudio. Otherwise, paths need to be set, for example:
 
 ```{r}
 ## --- SET PATHS --------------------------------------------------------------
