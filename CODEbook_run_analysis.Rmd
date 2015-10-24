@@ -222,7 +222,7 @@ unique(testSubj)
 # 2567     24     test
 ```
 
-
+======================================
 ###### --- (2) COMBINE & MERGE DATA --------------------------------------------------------------
 
 <b>trainD</b> is a column-wise combination of trainSubj, trainY and trainX to form a 7352 x 564 data-table.
@@ -243,7 +243,7 @@ testD <- tbl_df(cbind(testSubj,testY,testX))   # Source: local data frame [2,947
 D <- rbind(trainD,testD)   # Source: local data frame [10,299 x 564]
 ```
 
-
+======================================
 ###### --- (3) EXTRACT Mean & Std Measures --------------------------------------------------------------
 
 <b>D1</b> is a subset table derived from D that contains only the Activity Feature Measures' Mean and Standard Deviation values for all subjects and activity performed. It has 10299 rows and 89 columns.
@@ -287,7 +287,7 @@ names(D1)
 # [88] "fBodyBodyGyroMag.std.."               "fBodyBodyGyroJerkMag.std.."
 ```
 
-
+======================================
 ###### --- (4) USE Descriptive Activity Names --------------------------------------------------------------
 
 After substituting activity codes with activity descriptions, the levels of the variable "activity"" in D1 now reflects the activity descriptions:
@@ -299,6 +299,7 @@ levels(D1$activity)
 # [5] "WALKING_DOWNSTAIRS" "WALKING_UPSTAIRS"
 ```
 
+======================================
 ###### --- (5) DERIVE Variable Means GROUP by Subj & Activity --------------------------------------------------------------
 
 <b>D2_tidymeans</b> is a 180 x 89 data-table that details the means of activity feature variables in D1 which are grouped by the activity performed and by each subject (regardless of their group assignment). Each subject has 6 rows of data values; a total of 180 rows.
@@ -348,6 +349,7 @@ D2_tidymeans
 # fBodyBodyAccJerkMag.std.. (dbl), fBodyBodyGyroMag.std.. (dbl), fBodyBodyGyroJerkMag.std.. (dbl)
 #
 ```
+
 ======================================
 ###### --- (6) WRITE out tidymeans data --------------------------------------------------------------
 ```{r}
