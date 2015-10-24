@@ -1,7 +1,7 @@
 
 ##### Assignment for Getting & Cleaning Data : CODEbook_run_analysis.Rmd
-<p>CODEbook for run_analysis.R -- describing the variables -- coded by h-rm_tan 22-24_Oct2015</p>
-<p>Refer to README_run_analysis.Rmd for details on what the script does.</p>
+CODEbook for run_analysis.R -- describing the variables -- coded by h-rm_tan 22-24_Oct2015
+<br>*Refer to README_run_analysis.Rmd for details on what the script does.
 
 ##### Variables' Descriptions : the variables that run_analysis.R spews out at each stage are as follows :
 
@@ -276,7 +276,7 @@ levels(D1$activity)
 
 ###### --- (5) DERIVE Variable Means GROUP by Subj & Activity --------------------------------------------------------------
 
-<b>D2_tidymeans</b> is a 180 x 89 matrix summary of the means of activity feature variables in D1 which are grouped by the activity performed and by each subject (regardless of their group assignment). Each subject has 6 rows of data values; a total of 180rows.
+<b>D2_tidymeans</b> is a 180 x 89 matrix summary of the means of activity feature variables in D1 which are grouped by the activity performed and by each subject (regardless of their group assignment). Each subject has 6 rows of data values; a total of 180 rows.
 ```{r}
 ## --- MEANS of variables GROUPed by subjID, activity (& datatype) --------------------------------------------------------------
 D2_tidymeans <- D1 %>% group_by(subjID, datatype, activity) %>% summarise_each(funs(mean), -subjID:-activity )
@@ -329,7 +329,7 @@ D2_tidymeans
 # --- WRITE output D2_tidymeans to working-directory...
 # write.table(D2_tidymeans, file = "outputD2_tidymeans.txt", row.name=FALSE, col.names = names(D2_tidymeans), sep = ",")
 ```
-** If you save the file as "outputD2_tidymeans.txt" you can read the file from its directory:
+** You can read "outputD2_tidymeans.txt" from its directory:
 ```{r}
 outputD2_tidymeans <- read.csv("outputD2_tidymeans.txt")
 View(outputD2_tidymeans)
