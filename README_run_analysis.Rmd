@@ -2,13 +2,15 @@
 title: "README for run_analysis.R -- describing how the script works."
 output:
   html_document:
+    highlight: espresso
     keep_md: yes
+    theme: readable
 ---
 
-#### Assignment for Getting & Cleaning Data
-Notes regarding run_analysis.R -- coded by h-rm_tan 22-23Oct2015
+##### Assignment for Getting & Cleaning Data
+README Notes regarding run_analysis.R script : coded by h-rm_tan 22-23Oct2015
 
-#### REFs:
+##### REFs:
 http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones
 https://www.youtube.com/watch?v=XOEN9W05_4A
 
@@ -28,12 +30,10 @@ library(dplyr)
 
 ##### --- 1 READ FILES & ADD VARIABLE NAMES --------------------------------------------------------------
 1. All the relevant files are being read in 1st by the code as follows:
+
+1.1 First the activity variable description files are being read.
 ```{r}
-## --- READ FILES & ADD VARIABLE NAMES --------------------------------------------------------------
-```
-1.1 First the activity variable files are being read.
-```{r}
-## --- variables
+## --- variables' descriptions
 activityL <- read.table("/activity_labels.txt")   # dim(activityL)  # [1] 6 2
 
 activityF <- read.table("/features.txt")   # dim(activityF)  # [1] 561   2
@@ -105,7 +105,7 @@ testD <- tbl_df(cbind(testSubj,testY,testX))
 D <- rbind(trainD,testD)
 ```
 
---- Free Up Working Memory --------------------------------------------------------------
+##### --- Free Up Working Memory --------------------------------------------------------------
 Now that both datasets are merged, we could free up some working memory by clearing all the training and test variables, where appropriate. However, this is currently commented out in the code. 
 ```{r}
 # # --- clear workingMEM...
@@ -117,7 +117,6 @@ Now that both datasets are merged, we could free up some working memory by clear
 The subjID, datatype and activity information is kept while selecting only variable names that contain either "mean" or "std" using a chained process of select(). The output is assigned as "D1".
 
 ```{r}
-## --- EXTRACT Mean & Std measurements --------------------------------------------------------------
 D1 <- D %>% select(subjID, datatype, activity, contains("mean"), contains("std") ) # dim: [10,299 x 86 +3]
 ```
 
@@ -125,7 +124,6 @@ D1 <- D %>% select(subjID, datatype, activity, contains("mean"), contains("std")
 4. Subsequently, the exisiting activity codes [1:6] are replaced with their corresponding activity descriptions: "LAYING" ; "SITTING" ; "STANDING"; "WALKING"; "WALKING_DOWNSTAIRS" ; "WALKING_UPSTAIRS". This is achieved by indexing the activity variable, which ranges from 1 to 6, into the activity label vector "activityL" and substituting this as the activity variable in D1 in a single step.
 
 ```{r}
-## --- USE of Descriptive Activity Names --------------------------------------------------------------
 D1$activity <- activityL[D1$activity,2] #%>% print
 ```
 
@@ -168,7 +166,7 @@ D1$activity <- activityL[D1$activity,2] #%>% print
 ```
 
 
-##### --- 5 DERIVE Variable Means GROUPED by SubjID & Activity --------------------------------------------------------------
+##### --- 5 DERIVE Variable Means GROUPED by Subj & Activity --------------------------------------------------------------
 5. Next the script creates a 2nd independent tidy data set from D1. 
 The new tiday data D2_tidymeans comprises gives information on the average of each of the feature variable for each variable and each subject.
 
