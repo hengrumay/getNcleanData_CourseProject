@@ -8,7 +8,7 @@ CODEbook for run_analysis.R -- describing the variables -- coded by h-rm_tan 22-
 ###### --- (1) READ FILES & ADD VARIABLE NAMES --------------------------------------------------------------
 
 <b>activityL</b> is a 6 x 2 matrix describing the 6 types of activities performed by each participant.
-Column1 is numbered 1:6; column2 lists the activities ["LAYING" ; "SITTING" ; "STANDING"; "WALKING"; "WALKING_DOWNSTAIRS" ; "WALKING_UPSTAIRS"]
+Column1 is numbered 1:6; column2 lists the activities e.g. "LAYING" ; "SITTING" ; "STANDING"; "WALKING"; "WALKING_DOWNSTAIRS" ; "WALKING_UPSTAIRS".
 ```{r}
 activityL <- read.table("/activity_labels.txt")   # dim(activityL)  # [1] 6 2
 
@@ -200,13 +200,13 @@ unique(testSubj)
 
 ###### --- (2) COMBINE & MERGE DATA --------------------------------------------------------------
 
-<b>trainD</b> is a column-wise combination of trainSubj, trainY and trainX to form a 7352 x 564 matrix
+<b>trainD</b> is a column-wise combination of trainSubj, trainY and trainX to form a 7352 x 564 data-table.
 ```{r}
 ## --- combineTRAINdata
 trainD <- tbl_df(cbind(trainSubj,trainY,trainX))   # Source: local data frame [7,352 x 564]
 ```
 
-<b>testD</b> is a column-wise combination of testSubj, testY and testX to form a 2947 x 564 matrix
+<b>testD</b> is a column-wise combination of testSubj, testY and testX to form a 2947 x 564 data-table.
 ```{r}
 ## --- combineTRAINdata
 testD <- tbl_df(cbind(testSubj,testY,testX))   # Source: local data frame [2,947 x 564]
@@ -265,7 +265,7 @@ names(D1)
 
 ###### --- (4) USE Descriptive Activity Names --------------------------------------------------------------
 
-After substituting activity codes with activity descriptions, the levels of the variable "activity"" in D1 now reflect the activity descriptions:
+After substituting activity codes with activity descriptions, the levels of the variable "activity"" in D1 now reflects the activity descriptions:
 ```{r}
 D1$activity <- activityL[D1$activity,2] #%>% print
 
@@ -276,7 +276,7 @@ levels(D1$activity)
 
 ###### --- (5) DERIVE Variable Means GROUP by Subj & Activity --------------------------------------------------------------
 
-<b>D2_tidymeans</b> is a 180 x 89 matrix summary of the means of activity feature variables in D1 which are grouped by the activity performed and by each subject (regardless of their group assignment). Each subject has 6 rows of data values; a total of 180 rows.
+<b>D2_tidymeans</b> is a 180 x 89 data-table that details the means of activity feature variables in D1 which are grouped by the activity performed and by each subject (regardless of their group assignment). Each subject has 6 rows of data values; a total of 180 rows.
 ```{r}
 ## --- MEANS of variables GROUPed by subjID, activity (& datatype) --------------------------------------------------------------
 D2_tidymeans <- D1 %>% group_by(subjID, datatype, activity) %>% summarise_each(funs(mean), -subjID:-activity )

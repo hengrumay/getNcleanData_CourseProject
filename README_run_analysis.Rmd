@@ -1,13 +1,13 @@
 
 ##### Assignment for Getting & Cleaning Data: README_run_analysis.Rmd 
 README for run_analysis.R -- describing how the script works: coded by h-rm_tan 22-24_Oct2015.
-<br>Refer to CODEbook_run_analysis.Rmd for description of variables.</p>
+<br>*Refer to CODEbook_run_analysis.Rmd for description of variables.</p>
 
 ##### REFs:
 RAW DATA URL: http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones 
-<b>Activities measured shown in video: https://www.youtube.com/watch?v=XOEN9W05_4A 
+<br>Activities measured shown in video: https://www.youtube.com/watch?v=XOEN9W05_4A 
 
-<p>(i) The code should work if you have run_analysis.R and the unzipped "UCI HAR Dataset" data folder present in the working directory of R/Rstudio. Otherwise, paths need to be set, for example (as commented code):
+(i) The code should work if you have run_analysis.R and the unzipped "UCI HAR Dataset" data folder present in the working directory of R/Rstudio. Otherwise, paths need to be set, for example (as commented code):
 
 ```{r}
 ## --- SET PATHS --------------------------------------------------------------
@@ -32,7 +32,7 @@ activityL <- read.table("/activity_labels.txt")
 activityF <- read.table("/features.txt")   
 ```
 
-1.2 *It was discovered that the descriptions of activity features are actually not in a right format for use as variable 'names' so the script resolves this by "making names" out of the vector-column of character strings from activityF. <br>This will enable one to apply the select() function subsequently. This also allows the measurement data to eb appropriately labelled with descriptive variable names. 
+1.2 The descriptions of activity features are actually not in a right format for use as variable 'names' so the script resolves this by "making names" from the 2nd column of character strings from activityF. <br>This also allows the measurement data to be appropriately labelled with descriptive variable names. This further enables one to apply the select() function subsequently.  
 
 ```{r}
 ## --- make.names for feature variables
